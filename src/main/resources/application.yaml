@@ -1,0 +1,34 @@
+spring:
+  mvc:
+    static-path-pattern: /**
+  web:
+    resources:
+      static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/codeplatform?characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
+    #    url: jdbc:mysql://mcbufferdatabase.mysql.rds.aliyuncs.com:3306/codeplatform?characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
+    hikari:
+      #      username: wrx
+      #      password: 13775867321XUANs
+      username: root
+      password: 123456
+      minimum-idle: 2
+      maximum-pool-size: 10
+      auto-commit: true
+      pool-name: CodePlatform
+      max-lifetime: 120000
+      connection-test-query: SELECT 1
+      connection-timeout: 30000
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 1000MB
+server:
+  port: 8081
+#过滤器 /buffer  准入
+#  servlet:
+#    context-path: /buffer
