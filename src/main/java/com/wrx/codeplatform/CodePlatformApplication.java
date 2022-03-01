@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 
 @SpringBootApplication
-@MapperScan("com.wrx.codeplatform.framework.mapper.interfaces")
-@EnableGlobalMethodSecurity(securedEnabled = true)
+@MapperScan("com.wrx.codeplatform.framework.mapper")
+
 public class CodePlatformApplication {
 
     public static void main(String[] args) {

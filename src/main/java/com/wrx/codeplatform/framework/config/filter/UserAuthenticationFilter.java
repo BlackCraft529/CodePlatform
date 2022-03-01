@@ -1,14 +1,29 @@
 package com.wrx.codeplatform.framework.config.filter;
 
+import com.wrx.codeplatform.domain.permission.SysPermission;
+import com.wrx.codeplatform.domain.user.SysUser;
+import com.wrx.codeplatform.framework.service.SysPermissionService;
+import com.wrx.codeplatform.framework.service.SysUserService;
+import com.wrx.codeplatform.utils.SessionStorage;
+import com.wrx.codeplatform.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 登录拦截器
@@ -17,7 +32,10 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Slf4j
 public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-
+    @Autowired
+    private SysUserService sysUserService;
+    @Autowired
+    private SysPermissionService sysPermissionService;
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -32,6 +50,34 @@ public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilt
      */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+        String token = request.getParameter("token");
+        if (token != null && !token.equals("")){
+            System.out.println(token);
+            try {
+                String account = TokenUtil.validToken(token);
+                System.out.println(account);
+                SysUser sysUser = sysUserService.selectByName(account);
+                if (sysUser == null) {
+                    throw new RuntimeException("用户不存在");
+                }
+//                Collection<? extends GrantedAuthority> grantedAuthorities = new ArrayList<>();
+                //获取该用户所拥有的权限
+                List<SysPermission> sysPermissions = sysPermissionService.selectListByUser(sysUser.getId());
+                StringBuilder auths = new StringBuilder();
+                for (SysPermission per: sysPermissions){
+                    auths.append(per.getPermissionCode()).append(",");
+                }
+                Collection<? extends GrantedAuthority> authorities =
+                        Arrays.stream(auths.toString().split(","))
+                                .map(SimpleGrantedAuthority::new)
+                                .collect(Collectors.toList());
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(account, SessionStorage.pwdMap.get(account), authorities);
+                return authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+            }catch (Exception exception){
+                System.out.println(exception.getMessage());
+            }
+        }
+        SessionStorage.pwdMap.put(request.getParameter("username"),request.getParameter("password"));
         return authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getParameter("username"),
                         request.getParameter("password")));

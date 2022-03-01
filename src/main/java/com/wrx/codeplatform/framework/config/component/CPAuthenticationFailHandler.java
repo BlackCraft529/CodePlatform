@@ -1,7 +1,6 @@
 package com.wrx.codeplatform.framework.config.component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wrx.codeplatform.domain.result.LoginResult;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -30,9 +29,9 @@ public class CPAuthenticationFailHandler implements AuthenticationFailureHandler
         response.setStatus(200);
         response.setContentType("application/json;charset=UTF-8");
         //设置登录成功后返回的用户信息
-        String reason = e.getLocalizedMessage().equalsIgnoreCase("Bad credentials")?"密码错误":e.getLocalizedMessage();
-        LoginResult loginResult = new LoginResult("null", "null", false, reason);
-        response.getWriter().append(jsonObjectMapper.writeValueAsString(loginResult));
+//        String reason = e.getLocalizedMessage().equalsIgnoreCase("Bad credentials")?"密码错误":e.getLocalizedMessage();
+//        LoginResult loginResult = new LoginResult("null", "null", false, reason);
+//        response.getWriter().append(jsonObjectMapper.writeValueAsString(loginResult));
     }
 
 

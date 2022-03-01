@@ -3,6 +3,8 @@ package com.wrx.codeplatform.framework.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,9 +22,24 @@ public class UserController {
      */
     private final ObjectMapper jsonObjectMapper =  new ObjectMapper();
 
+    //仅有该角色的用户才可以访问
+//    @PreAuthorize("hasAnyAuthority('modify_user')")
     @RequestMapping(value = "/test",produces = {"text/plain;charset=UTF-8"})
     @ResponseBody
     public String welcome(@RequestBody String jsonData){
+        System.out.println(jsonData);
+        return "Hello Test";
+    }
+
+    /**
+     * 获取用户主页详细信息
+     *
+     * @param jsonData json data
+     * @return 用户详细信息Json
+     */
+    @RequestMapping(value = "/getUserInfo",produces = {"text/plain;charset=UTF-8"})
+    @ResponseBody
+    public String getUserInfo(@RequestBody String jsonData){
         System.out.println(jsonData);
         return "Hello Test";
     }

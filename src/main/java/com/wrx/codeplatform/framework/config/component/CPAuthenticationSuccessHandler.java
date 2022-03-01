@@ -1,7 +1,6 @@
 package com.wrx.codeplatform.framework.config.component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wrx.codeplatform.domain.result.LoginResult;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -26,11 +25,12 @@ public class CPAuthenticationSuccessHandler implements AuthenticationSuccessHand
         response.setHeader("Access-Control-Allow-Origin", "*");
         // 允许自定义请求头token(允许head跨域)
         response.setHeader("Access-Control-Allow-Headers", "token, Accept, Origin, X-Requested-With, Content-Type, Last-Modified");
+
         response.setStatus(200);
         response.setContentType("application/json;charset=UTF-8");
         //设置登录成功后返回的用户信息
-        LoginResult loginResult = new LoginResult(authentication.getName(), "testToken", authentication.isAuthenticated());
-        response.getWriter().append(jsonObjectMapper.writeValueAsString(loginResult));
+//        LoginResult loginResult = new LoginResult(authentication.getName(), "testToken", authentication.isAuthenticated());
+//        response.getWriter().append(jsonObjectMapper.writeValueAsString(loginResult));
     }
 
 }
