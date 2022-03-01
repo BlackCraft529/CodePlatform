@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wrx.codeplatform.framework.mapper.SysRequestPathMapper">
 
-    <resultMap type="com.wrx.codeplatform.domain.common.SysRequestPath" id="SysRequestPathMap">
+    <resultMap type="com.wrx.codeplatform.domain.framework.sql.common.SysRequestPath" id="SysRequestPathMap">
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="url" column="url" jdbcType="VARCHAR"/>
         <result property="description" column="description" jdbcType="VARCHAR"/>

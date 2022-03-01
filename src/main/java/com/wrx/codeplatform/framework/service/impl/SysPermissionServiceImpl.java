@@ -1,6 +1,6 @@
 package com.wrx.codeplatform.framework.service.impl;
 
-import com.wrx.codeplatform.domain.permission.SysPermission;
+import com.wrx.codeplatform.domain.framework.sql.permission.SysPermission;
 import com.wrx.codeplatform.framework.mapper.SysPermissionMapper;
 import com.wrx.codeplatform.framework.service.SysPermissionService;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
 package com.wrx.codeplatform.framework.service.impl;
 
-import com.wrx.codeplatform.domain.common.SysRequestPathPermissionRelation;
+import com.wrx.codeplatform.domain.framework.sql.common.SysRequestPathPermissionRelation;
 import com.wrx.codeplatform.framework.mapper.SysRequestPathPermissionRelationMapper;
 import com.wrx.codeplatform.framework.service.SysRequestPathPermissionRelationService;
 import org.springframework.stereotype.Service;

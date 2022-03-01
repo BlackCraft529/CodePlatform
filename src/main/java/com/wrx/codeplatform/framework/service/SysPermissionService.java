@@ -1,6 +1,6 @@
 package com.wrx.codeplatform.framework.service;
 
-import com.wrx.codeplatform.domain.permission.SysPermission;
+import com.wrx.codeplatform.domain.framework.sql.permission.SysPermission;
 
 import java.util.List;
 

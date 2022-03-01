@@ -1,8 +1,7 @@
 package com.wrx.codeplatform.framework.mapper;
 
-import com.wrx.codeplatform.domain.permission.SysPermission;
+import com.wrx.codeplatform.domain.framework.sql.permission.SysPermission;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 

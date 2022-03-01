@@ -1,4 +1,4 @@
-package com.wrx.codeplatform.domain.common;
+package com.wrx.codeplatform.domain.framework.sql.common;
 
 import lombok.Data;
 import org.apache.ibatis.annotations.Mapper;

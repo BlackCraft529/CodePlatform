@@ -1,6 +1,6 @@
 package com.wrx.codeplatform.framework.service;
 
-import com.wrx.codeplatform.domain.common.SysRequestPath;
+import com.wrx.codeplatform.domain.framework.sql.common.SysRequestPath;
 
 import java.util.List;
 

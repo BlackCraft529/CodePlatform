@@ -1,7 +1,7 @@
 package com.wrx.codeplatform.framework.config.service;
 
-import com.wrx.codeplatform.domain.permission.SysPermission;
-import com.wrx.codeplatform.domain.user.SysUser;
+import com.wrx.codeplatform.domain.framework.sql.permission.SysPermission;
+import com.wrx.codeplatform.domain.framework.sql.user.SysUser;
 import com.wrx.codeplatform.framework.service.SysPermissionService;
 import com.wrx.codeplatform.framework.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;

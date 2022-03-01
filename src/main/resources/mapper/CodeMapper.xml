@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wrx.codeplatform.framework.mapper.CodeMapper">
+
+    <resultMap type="com.wrx.codeplatform.domain.framework.sql.code.Code" id="CodeMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="filePath" column="file_path" jdbcType="VARCHAR"/>
+        <result property="score" column="score" jdbcType="DOUBLE"/>
+        <result property="lastCheckDate" column="last_check_date" jdbcType="DATETIME"/>
+        <result property="result" column="result" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectCodeById" resultMap="CodeMap">
+        select * from user_code_files where id = #{id}
+    </select>
+
+    <select id="selectCodesByUserId" resultMap="CodeMap">
+        select * from user_code_files where user_id = #{userId}
+    </select>
+
+    <update id="updateCode">
+        update user_code_files
+        <set>
+            <if test="filePath != null and filePath != ''">
+                file_path = #{filePath},
+            </if>
+            <if test="score != null">
+                score = #{score},
+            </if>
+            <if test="lastCheckDate != null">
+                last_check_date = #{lastCheckDate},
+            </if>
+            <if test="result != null and result != ''">
+                `result` = #{result},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCodeById">
+        delete from user_code_files where id = #{id}
+    </delete>
+
+    <insert id="insertCode" keyProperty="id" useGeneratedKeys="true">
+        insert into user_code_files (user_id, file_path, score, last_check_date, `result`)
+        values (#{userId}, #{filePath}, #{score}, #{lastCheckDate}, #{result})
+    </insert>
+</mapper>

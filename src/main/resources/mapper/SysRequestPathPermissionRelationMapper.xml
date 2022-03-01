@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wrx.codeplatform.framework.mapper.SysRequestPathPermissionRelationMapper">
 
-    <resultMap type="com.wrx.codeplatform.domain.common.SysRequestPathPermissionRelation" id="SysRequestPathPermissionRelationMap">
+    <resultMap type="com.wrx.codeplatform.domain.framework.sql.common.SysRequestPathPermissionRelation" id="SysRequestPathPermissionRelationMap">
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="urlId" column="url_id" jdbcType="INTEGER"/>
         <result property="permissionId" column="permission_id" jdbcType="INTEGER"/>

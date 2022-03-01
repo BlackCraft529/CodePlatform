@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wrx.codeplatform.framework.mapper.UserInfoMapper">
+
+    <resultMap type="com.wrx.codeplatform.domain.framework.sql.user.UserInfo" id="UserInfoMap">
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="location" column="location" jdbcType="VARCHAR"/>
+        <result property="school" column="school" jdbcType="VARCHAR"/>
+        <result property="nickName" column="nick_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectByUserId" resultMap="UserInfoMap">
+        select * from sys_permission where user_id = #{userId}
+    </select>
+
+    <update id="updateUserInfo">
+        update user_info
+        <set>
+            <if test="description != null and description != ''">
+                description = #{description},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone},
+            </if>
+            <if test="location != null and location != ''">
+                location = #{location},
+            </if>
+            <if test="school != null and school != ''">
+                school = #{school},
+            </if>
+            <if test="nickName != null and nickName != ''">
+                nick_name = #{nickName},
+            </if>
+        </set>
+        where user_id = #{userId}
+    </update>
+
+    <delete id="deleteUserInfo">
+        delete from user_info where user_id = #{userId}
+    </delete>
+
+    <insert id="insertUserInfo">
+        insert into user_info (user_id description, email, phone, location, school, nick_name)
+        values  (#{userId}, #{description}, #{email}, #{phone}, #{location}, #{school}, #{nickName})
+    </insert>
+</mapper>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wrx.codeplatform.framework.mapper.ContainerLinkMapper">
+
+    <resultMap type="com.wrx.codeplatform.domain.framework.sql.container.ContainerLink" id="ContainerLinkMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="containerId" column="container_id" jdbcType="INTEGER"/>
+        <result property="fileId" column="file_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="selectContainerLinkByContainerId" resultMap="ContainerLinkMap">
+        select * from container_link where container_id = #{containerId}
+    </select>
+
+    <select id="selectContainerLinkById" resultMap="ContainerLinkMap">
+        select * from container_link where id = #{id}
+    </select>
+
+    <select id="selectContainerLinkByFileId" resultMap="ContainerLinkMap">
+        select * from container_link where file_id = #{fileId}
+    </select>
+
+    <update id="updateContainerLink">
+        update container_link
+        <set>
+            <if test="containerId != null">
+                container_id = #{containerId},
+            </if>
+            <if test="fileId != null">
+                file_id = #{fileId},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteContainerLink">
+        delete from container_link where id=#{id}
+    </delete>
+
+    <insert id="insertContainerLink" keyProperty="id" useGeneratedKeys="true">
+        insert into container_link (container_id, file_id) values (#{containerId}, #{fileId})
+    </insert>
+
+</mapper>

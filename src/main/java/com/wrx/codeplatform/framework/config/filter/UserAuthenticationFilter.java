@@ -1,7 +1,7 @@
 package com.wrx.codeplatform.framework.config.filter;
 
-import com.wrx.codeplatform.domain.permission.SysPermission;
-import com.wrx.codeplatform.domain.user.SysUser;
+import com.wrx.codeplatform.domain.framework.sql.permission.SysPermission;
+import com.wrx.codeplatform.domain.framework.sql.user.SysUser;
 import com.wrx.codeplatform.framework.service.SysPermissionService;
 import com.wrx.codeplatform.framework.service.SysUserService;
 import com.wrx.codeplatform.utils.SessionStorage;
@@ -15,11 +15,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;

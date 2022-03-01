@@ -1,6 +1,6 @@
 package com.wrx.codeplatform.framework.mapper;
 
-import com.wrx.codeplatform.domain.common.SysRequestPathPermissionRelation;
+import com.wrx.codeplatform.domain.framework.sql.common.SysRequestPathPermissionRelation;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;

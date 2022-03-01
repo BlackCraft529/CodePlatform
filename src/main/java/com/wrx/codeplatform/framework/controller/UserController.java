@@ -1,10 +1,6 @@
 package com.wrx.codeplatform.framework.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -32,7 +28,7 @@ public class UserController {
     }
 
     /**
-     * 获取用户主页详细信息
+     * 获取用户主页详细数据
      *
      * @param jsonData json data
      * @return 用户详细信息Json

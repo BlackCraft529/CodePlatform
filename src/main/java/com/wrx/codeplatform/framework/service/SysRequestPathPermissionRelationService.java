@@ -1,6 +1,6 @@
 package com.wrx.codeplatform.framework.service;
 
-import com.wrx.codeplatform.domain.common.SysRequestPathPermissionRelation;
+import com.wrx.codeplatform.domain.framework.sql.common.SysRequestPathPermissionRelation;
 
 import java.util.List;
 

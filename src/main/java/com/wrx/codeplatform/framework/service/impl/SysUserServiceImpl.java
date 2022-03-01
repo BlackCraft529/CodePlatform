@@ -1,6 +1,6 @@
 package com.wrx.codeplatform.framework.service.impl;
 
-import com.wrx.codeplatform.domain.user.SysUser;
+import com.wrx.codeplatform.domain.framework.sql.user.SysUser;
 import com.wrx.codeplatform.framework.mapper.SysUserMapper;
 import com.wrx.codeplatform.framework.service.SysUserService;
 import org.springframework.stereotype.Service;

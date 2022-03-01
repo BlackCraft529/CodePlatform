@@ -1,4 +1,4 @@
-package com.wrx.codeplatform.domain.user;
+package com.wrx.codeplatform.domain.framework.sql.user;
 
 import lombok.Data;
 

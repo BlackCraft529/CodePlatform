@@ -1,6 +1,6 @@
 package com.wrx.codeplatform.framework.config.handler;
 
-import com.wrx.codeplatform.domain.permission.SysPermission;
+import com.wrx.codeplatform.domain.framework.sql.permission.SysPermission;
 import com.wrx.codeplatform.framework.service.SysPermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;

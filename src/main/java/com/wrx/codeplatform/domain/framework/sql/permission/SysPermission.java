@@ -1,4 +1,4 @@
-package com.wrx.codeplatform.domain.permission;
+package com.wrx.codeplatform.domain.framework.sql.permission;
 
 import lombok.Data;
 

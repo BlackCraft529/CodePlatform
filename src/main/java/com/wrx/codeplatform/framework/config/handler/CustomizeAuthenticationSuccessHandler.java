@@ -3,7 +3,7 @@ package com.wrx.codeplatform.framework.config.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wrx.codeplatform.domain.result.JsonResult;
-import com.wrx.codeplatform.domain.user.SysUser;
+import com.wrx.codeplatform.domain.framework.sql.user.SysUser;
 import com.wrx.codeplatform.framework.service.SysUserService;
 import com.wrx.codeplatform.utils.ResultUtil;
 import com.wrx.codeplatform.utils.TokenUtil;

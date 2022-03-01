@@ -1,6 +1,6 @@
 package com.wrx.codeplatform.framework.service.impl;
 
-import com.wrx.codeplatform.domain.common.SysRequestPath;
+import com.wrx.codeplatform.domain.framework.sql.common.SysRequestPath;
 import com.wrx.codeplatform.framework.mapper.SysRequestPathMapper;
 import com.wrx.codeplatform.framework.service.SysRequestPathService;
 import org.springframework.stereotype.Service;

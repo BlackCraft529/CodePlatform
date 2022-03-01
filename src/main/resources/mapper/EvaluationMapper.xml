@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wrx.codeplatform.framework.mapper.EvaluationMapper">
+     <resultMap type="com.wrx.codeplatform.domain.framework.sql.code.Evaluation" id="EvaluationMap">
+            <result property="id" column="id" jdbcType="INTEGER"/>
+            <result property="fileId" column="file_id" jdbcType="INTEGER"/>
+            <result property="publisherId" column="publisher_id" jdbcType="INTEGER"/>
+            <result property="context" column="context" jdbcType="VARCHAR"/>
+            <result property="publishedDate" column="published_date" jdbcType="DATETIME"/>
+            <result property="modifyDate" column="modify_date" jdbcType="DATETIME"/>
+     </resultMap>
+    <select id="selectEvaluationById" resultMap="EvaluationMap">
+        select * from file_evaluation where id = #{id}
+    </select>
+
+    <select id="selectEvaluationByPublisherId" resultMap="EvaluationMap">
+        select * from file_evaluation where publisher_id = #{publisherId}
+    </select>
+
+    <update id="updateEvaluation">
+        update user_code_files
+        <set>
+            <if test="fileId != null">
+                file_id = #{fileId},
+            </if>
+            <if test="publisherId != null">
+                publisher_id = #{publisherId},
+            </if>
+            <if test="context != null and context != ''">
+                context = #{context},
+            </if>
+            <if test="publishedDate != null">
+                published_date = #{publishedDate},
+            </if>
+            <if test="modifyDate != null">
+                modify_date = #{modifyDate},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteEvaluation">
+        delete from file_evaluation where id = #{id}
+    </delete>
+
+    <insert id="insertCode" keyProperty="id" useGeneratedKeys="true">
+        insert into user_code_files (file_id, publisher_id, context, published_date, modify_date)
+        values (#{fileId}, #{publisherId}, #{context}, #{publishedDate}, #{modifyDate})
+    </insert>
+</mapper>
