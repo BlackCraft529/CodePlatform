@@ -6,8 +6,8 @@
             <result property="fileId" column="file_id" jdbcType="INTEGER"/>
             <result property="publisherId" column="publisher_id" jdbcType="INTEGER"/>
             <result property="context" column="context" jdbcType="VARCHAR"/>
-            <result property="publishedDate" column="published_date" jdbcType="DATETIME"/>
-            <result property="modifyDate" column="modify_date" jdbcType="DATETIME"/>
+            <result property="publishedDate" column="published_date" jdbcType="DATE"/>
+            <result property="modifyDate" column="modify_date" jdbcType="DATE"/>
      </resultMap>
     <select id="selectEvaluationById" resultMap="EvaluationMap">
         select * from file_evaluation where id = #{id}
