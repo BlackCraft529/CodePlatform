@@ -34,7 +34,17 @@ public enum ResultCode {
     USER_ACCOUNT_USE_BY_OTHERS(2009, "账号下线"),
 
     /* 业务错误 */
-    NO_PERMISSION(3001, "没有权限");
+    NO_PERMISSION(3001, "没有权限"),
+    CODE_COOL_DOWN(3002,"验证码功能冷却中"),
+    SQL_ERROR(3003, "数据库业务错误"),
+    SERVICE_ERROR(3004,"服务器业务错误"),
+    CODE_ERROR(3005,"验证码不匹配"),
+    CODE_OVERDUE(3006,"验证码失效"),
+    PHONE_HAS_NULL_CODE(3007,"手机号暂未存在有效验证码"),
+    PHONE_SERVICE_ERROR(3008,"运营商错误"),
+    PHONE_USED(3009,"手机号已被注册"),
+    PHONE_NOT_EXISTS(3010,"手机号不存在");
+
     private Integer code;
     private String message;
 

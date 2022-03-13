@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wrx.codeplatform.domain.result.JsonResult;
 import com.wrx.codeplatform.domain.framework.sql.user.SysUser;
 import com.wrx.codeplatform.framework.service.SysUserService;
-import com.wrx.codeplatform.utils.ResultUtil;
-import com.wrx.codeplatform.utils.TokenUtil;
+import com.wrx.codeplatform.utils.common.ResultUtil;
+import com.wrx.codeplatform.utils.common.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,7 +38,7 @@ public class CustomizeAuthenticationSuccessHandler implements AuthenticationSucc
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
         //更新用户表上次登录时间、更新人、更新时间等字段
         User userDetails = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        SysUser sysUser = sysUserService.selectByName(userDetails.getUsername());
+        SysUser sysUser = sysUserService.selectByAccount(userDetails.getUsername());
         sysUser.setLastLoginTime(new Date());
         sysUser.setUpdateTime(new Date());
         sysUser.setUpdateUser(sysUser.getId());

@@ -12,7 +12,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class CPUserDetailsService implements UserDetailsService {
             throw new RuntimeException("用户不能为空");
         }
         //根据用户名查询用户
-        SysUser sysUser = sysUserService.selectByName(username);
+        SysUser sysUser = sysUserService.selectByAccount(username);
         if (sysUser == null) {
             throw new RuntimeException("用户不存在");
         }

@@ -1,4 +1,4 @@
-package com.wrx.codeplatform.utils;
+package com.wrx.codeplatform.utils.data;
 
 import java.util.HashMap;
 

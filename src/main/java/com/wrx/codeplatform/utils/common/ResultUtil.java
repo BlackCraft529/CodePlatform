@@ -1,4 +1,4 @@
-package com.wrx.codeplatform.utils;
+package com.wrx.codeplatform.utils.common;
 
 import com.wrx.codeplatform.domain.enums.ResultCode;
 import com.wrx.codeplatform.domain.result.JsonResult;

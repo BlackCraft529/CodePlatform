@@ -43,5 +43,19 @@ public class SysUser implements Serializable {
 
     private String token;
 
-
+    public SysUser(String account, String userName, String password){
+        this.account = account;
+        this.userName = userName;
+        this.password = password;
+        this.lastLoginTime = new Date();
+        this.enabled = true;
+        this.accountNonExpired = true;
+        this.accountNonLocked = true;
+        this.credentialsNonExpired = true;
+        this.createTime = new Date();
+        this.updateTime = new Date();
+        this.createUser = 1;
+        this.updateUser = 1;
+        this.token = "";
+    }
 }

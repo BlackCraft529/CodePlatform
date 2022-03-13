@@ -48,9 +48,8 @@ public class SysUserServiceImpl implements SysUserService {
      * @return 实例对象
      */
     @Override
-    public SysUser insert(SysUser sysUser) {
-        this.sysUserMapper.insert(sysUser);
-        return sysUser;
+    public int insert(SysUser sysUser) {
+        return this.sysUserMapper.insert(sysUser);
     }
 
     /**
@@ -77,7 +76,7 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public SysUser selectByName(String userName) {
-        return this.sysUserMapper.selectByName(userName);
+    public SysUser selectByAccount(String account) {
+        return this.sysUserMapper.selectByName(account);
     }
 }

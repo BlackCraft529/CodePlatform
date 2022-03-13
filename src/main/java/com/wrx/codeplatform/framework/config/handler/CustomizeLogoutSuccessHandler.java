@@ -2,7 +2,7 @@ package com.wrx.codeplatform.framework.config.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wrx.codeplatform.domain.result.JsonResult;
-import com.wrx.codeplatform.utils.ResultUtil;
+import com.wrx.codeplatform.utils.common.ResultUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Component;

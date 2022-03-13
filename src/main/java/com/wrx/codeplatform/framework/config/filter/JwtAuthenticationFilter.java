@@ -1,6 +1,6 @@
 package com.wrx.codeplatform.framework.config.filter;
 
-import com.wrx.codeplatform.utils.TokenUtil;
+import com.wrx.codeplatform.utils.common.TokenUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;

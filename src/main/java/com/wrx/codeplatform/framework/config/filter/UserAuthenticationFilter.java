@@ -4,8 +4,8 @@ import com.wrx.codeplatform.domain.framework.sql.permission.SysPermission;
 import com.wrx.codeplatform.domain.framework.sql.user.SysUser;
 import com.wrx.codeplatform.framework.service.SysPermissionService;
 import com.wrx.codeplatform.framework.service.SysUserService;
-import com.wrx.codeplatform.utils.SessionStorage;
-import com.wrx.codeplatform.utils.TokenUtil;
+import com.wrx.codeplatform.utils.data.SessionStorage;
+import com.wrx.codeplatform.utils.common.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -53,7 +53,7 @@ public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilt
             try {
                 String account = TokenUtil.validToken(token);
                 System.out.println(account);
-                SysUser sysUser = sysUserService.selectByName(account);
+                SysUser sysUser = sysUserService.selectByAccount(account);
                 if (sysUser == null) {
                     throw new RuntimeException("用户不存在");
                 }
@@ -70,8 +70,8 @@ public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilt
                                 .collect(Collectors.toList());
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(account, SessionStorage.pwdMap.get(account), authorities);
                 return authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-            }catch (Exception exception){
-                System.out.println(exception.getMessage());
+            }catch (Exception ignore){
+                //System.out.println(exception.getMessage());
             }
         }
         SessionStorage.pwdMap.put(request.getParameter("username"),request.getParameter("password"));

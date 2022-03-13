@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wrx.codeplatform.framework.mapper.SysUserRoleRelationMapper">
+
+    <resultMap type="com.wrx.codeplatform.domain.framework.sql.user.SysUserRoleRelation" id="SysUserRoleRelationMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="roleId" column="role_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="selectSysUserRoleRelationById" resultMap="SysUserRoleRelationMap">
+        select * from sys_user_role_relation where id=#{id};
+    </select>
+    <select id="selectSysUserRoleRelationByUserId" resultMap="SysUserRoleRelationMap">
+        select * from sys_user_role_relation where user_id=#{userId};
+    </select>
+    <select id="selectSysUserRoleRelationByRoleId" resultMap="SysUserRoleRelationMap">
+        select * from sys_user_role_relation where role_id=#{roleId};
+    </select>
+    <insert id="insertNewSysUserRoleRelation" keyProperty="id" useGeneratedKeys="true">
+        insert into sys_user_role_relation(role_id, user_id)
+        values (#{roleId}, #{userId})
+    </insert>
+    <delete id="deleteSysUserRoleRelationById">
+        delete from sys_user_role_relation where id=#{id}
+    </delete>
+    <delete id="deleteSysUserRoleRelationByUserId">
+        delete from sys_user_role_relation where user_id=#{userId};
+    </delete>
+</mapper>

@@ -71,15 +71,10 @@ public interface UserInfoService {
     /**
      * 插入新的用户信息
      *
-     * @param description       描述
-     * @param email             邮箱
-     * @param phone             手机号
-     * @param location          定位
-     * @param school            学校
-     * @param nickName          昵称
-     * @return                  影响条数
+     * @param userInfo 用户数据信息
+     * @return 影响条数
      */
-    int insertUserInfo(String description, String email, String phone, String location, String school, String nickName);
+    int insertUserInfo(UserInfo userInfo);
 
     /**
      * 删除用户信息

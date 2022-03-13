@@ -1,7 +1,9 @@
 package com.wrx.codeplatform.framework.service.impl;
 
 import com.wrx.codeplatform.domain.framework.sql.user.UserInfo;
+import com.wrx.codeplatform.framework.mapper.UserInfoMapper;
 import com.wrx.codeplatform.framework.service.UserInfoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -10,6 +12,10 @@ import org.springframework.stereotype.Service;
  */
 @Service("userInfoService")
 public class UserInfoServiceImpl implements UserInfoService {
+
+    @Autowired
+    private UserInfoMapper userInfoMapper;
+
     /**
      * 根据用户ID查询用户信息
      *
@@ -95,17 +101,12 @@ public class UserInfoServiceImpl implements UserInfoService {
     /**
      * 插入新的用户信息
      *
-     * @param description 描述
-     * @param email       邮箱
-     * @param phone       手机号
-     * @param location    定位
-     * @param school      学校
-     * @param nickName    昵称
+     * @param userInfo 用户数据
      * @return 影响条数
      */
     @Override
-    public int insertUserInfo(String description, String email, String phone, String location, String school, String nickName) {
-        return 0;
+    public int insertUserInfo(UserInfo userInfo) {
+        return userInfoMapper.insertUserInfo(userInfo);
     }
 
 

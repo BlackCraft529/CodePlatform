@@ -1,15 +1,11 @@
 package com.wrx.codeplatform.framework.config;
 
-import com.wrx.codeplatform.framework.config.component.CPAuthenticationFailHandler;
-import com.wrx.codeplatform.framework.config.component.CPAuthenticationSuccessHandler;
+import com.wrx.codeplatform.framework.config.common.PwdEncoder;
 import com.wrx.codeplatform.framework.config.filter.JwtAuthenticationFilter;
 import com.wrx.codeplatform.framework.config.filter.UserAuthenticationFilter;
 import com.wrx.codeplatform.framework.config.handler.*;
 import com.wrx.codeplatform.framework.config.service.CPPersistentTokenBasedRememberMeServices;
 import com.wrx.codeplatform.framework.config.service.CPUserDetailsService;
-import com.wrx.codeplatform.framework.service.SysPermissionService;
-import com.wrx.codeplatform.framework.service.SysUserService;
-import com.wrx.codeplatform.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -143,6 +139,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .tokenRepository(persistentTokenRepository())
                 .tokenValiditySeconds(60 * 60 * 24)
                 .userDetailsService(userDetailsService).
+                //无权限即可访问的页面管理
+                    and().authorizeRequests().
+                antMatchers("/getSchools","/getLocations","/checkOrCreateVerifyStatus").permitAll().
                 //会话管理
                         and().sessionManagement().
                 maximumSessions(1).//同一账号同时登录最大用户数
@@ -189,7 +188,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
+        return PwdEncoder.getPasswordEncoder();
     }
 
     @Bean

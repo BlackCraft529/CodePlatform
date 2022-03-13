@@ -1,4 +1,4 @@
-package com.wrx.codeplatform.utils;
+package com.wrx.codeplatform.utils.common;
 
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
@@ -10,6 +10,7 @@ import com.wrx.codeplatform.domain.framework.sql.permission.SysPermission;
 import com.wrx.codeplatform.domain.framework.sql.user.SysUser;
 import com.wrx.codeplatform.framework.service.SysPermissionService;
 import com.wrx.codeplatform.framework.service.SysUserService;
+import com.wrx.codeplatform.utils.data.SessionStorage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -80,7 +81,7 @@ public class TokenUtil {
         if (token != null && !token.equals("")) {
             try {
                 String account = validToken(token);
-                SysUser sysUser = sysUserService.selectByName(account);
+                SysUser sysUser = sysUserService.selectByAccount(account);
                 if (sysUser == null) {
                     throw new RuntimeException("用户不存在");
                 }
@@ -145,8 +146,8 @@ public class TokenUtil {
     }
     /**
      * 校验token
-     * @param token
-     * @return
+     * @param token  token
+     * @return       用户名
      */
     public static String validToken(String token) {
         try {
@@ -171,8 +172,8 @@ public class TokenUtil {
             }
             return account.toString();
         } catch (ParseException | JOSEException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 }

@@ -34,7 +34,7 @@ public interface SysUserService {
      * @param sysUser 实例对象
      * @return 实例对象
      */
-    SysUser insert(SysUser sysUser);
+    int insert(SysUser sysUser);
 
     /**
      * 修改数据
@@ -55,9 +55,9 @@ public interface SysUserService {
     /**
      * 根据用户名查询用户
      *
-     * @param userName
-     * @return
+     * @param account  用户名
+     * @return          用户名
      */
-    SysUser selectByName(String userName);
+    SysUser selectByAccount(String account);
 
 }

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wrx.codeplatform.framework.mapper.VerifyStatusMapper">
+    <resultMap type="com.wrx.codeplatform.domain.framework.sql.user.VerifyStatus" id="VerifyStatusMap">
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="account" column="account" jdbcType="VARCHAR"/>
+        <result property="code" column="code" jdbcType="VARCHAR"/>
+        <result property="sendDate" column="send_date" jdbcType="DATE"/>
+        <result property="complete" column="complete" jdbcType="BOOLEAN"/>
+        <result property="completeDate" column="complete_date" jdbcType="DATE"/>
+    </resultMap>
+
+    <select id="selectByPhone" resultMap="VerifyStatusMap">
+        select * from verify_status where phone = #{phone}
+    </select>
+
+    <select id="selectByAccount" resultMap="VerifyStatusMap">
+        select * from verify_status where account = #{account}
+    </select>
+
+    <update id="updateVerifyStatus">
+        update verify_status
+        <set>
+            <if test="account != null and account != ''">
+                account = #{account},
+            </if>
+            <if test="code != null and code != ''">
+                code = #{code},
+            </if>
+            <if test="sendDate != null">
+                send_date = #{sendDate},
+            </if>
+            <if test="complete != null">
+                complete = #{complete},
+            </if>
+            <if test="completeDate != null">
+                complete_date = #{completeDate},
+            </if>
+        </set>
+        where phone = #{phone}
+    </update>
+
+    <delete id="deleteVerifyStatusByPhone">
+        delete from verify_status where phone = #{phone}
+    </delete>
+
+    <insert id="insertVerifyStatus">
+        insert into verify_status (phone, account, code, send_date, complete, complete_date)
+        values  (#{phone}, #{account}, #{code}, #{sendDate}, #{complete}, #{completeDate})
+    </insert>
+
+</mapper>

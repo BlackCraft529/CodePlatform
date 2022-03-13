@@ -16,4 +16,14 @@ public class UserInfo {
     private String school;
     private String nickName;
 
+    public UserInfo(int userId, String description, String email, String phone, String location, String school, String nickName){
+        this.userId = userId;
+        this.description = description;
+        this.email = email;
+        this.phone = phone;
+        this.location = location;
+        this.school = school;
+        this.nickName = nickName;
+    }
+
 }

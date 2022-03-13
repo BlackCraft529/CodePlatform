@@ -46,7 +46,7 @@
     </delete>
 
     <insert id="insertUserInfo">
-        insert into user_info (user_id description, email, phone, location, school, nick_name)
+        insert into user_info (user_id, description, email, phone, location, school, nick_name)
         values  (#{userId}, #{description}, #{email}, #{phone}, #{location}, #{school}, #{nickName})
     </insert>
 </mapper>
