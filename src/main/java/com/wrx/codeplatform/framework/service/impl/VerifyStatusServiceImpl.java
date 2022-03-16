@@ -2,13 +2,12 @@ package com.wrx.codeplatform.framework.service.impl;
 
 import com.wrx.codeplatform.domain.config.DataPool;
 import com.wrx.codeplatform.domain.framework.sql.user.VerifyStatus;
-import com.wrx.codeplatform.domain.result.JsonResult;
 import com.wrx.codeplatform.framework.mapper.VerifyStatusMapper;
 import com.wrx.codeplatform.framework.service.VerifyStatusService;
 import com.wrx.codeplatform.utils.common.TimeUtil;
+import com.wrx.codeplatform.utils.mobile.CodeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -30,7 +29,7 @@ public class VerifyStatusServiceImpl implements VerifyStatusService {
      */
     @Override
     public VerifyStatus selectVerifyStatusByPhone(String phone) {
-        return null;
+        return verifyStatusMapper.selectByPhone(phone);
     }
 
     /**
@@ -53,7 +52,9 @@ public class VerifyStatusServiceImpl implements VerifyStatusService {
      */
     @Override
     public int updateVerifyStatusComplete(String phone, boolean complete) {
-        return 0;
+        VerifyStatus verifyStatus = verifyStatusMapper.selectByPhone(phone);
+        verifyStatus.setComplete(complete);
+        return verifyStatusMapper.updateVerifyStatus(verifyStatus);
     }
 
     /**
@@ -64,7 +65,7 @@ public class VerifyStatusServiceImpl implements VerifyStatusService {
      */
     @Override
     public int insertVerifyStatus(VerifyStatus verifyStatus) {
-        return 0;
+        return verifyStatusMapper.insertVerifyStatus(verifyStatus);
     }
 
     /**
@@ -93,14 +94,10 @@ public class VerifyStatusServiceImpl implements VerifyStatusService {
         }
         try {
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            //验证码仍然有效
-            if (TimeUtil.minuteBetween(df.format(verifyStatus.getSendDate()), df.format(new Date())) <= DataPool.codeUsefulMin && code.equalsIgnoreCase(verifyStatus.getCode())){
-                return true;
-            }
+            return (TimeUtil.minuteBetween(df.format(verifyStatus.getSendDate()), df.format(new Date())) <= DataPool.codeUsefulMin && CodeUtil.verifyCode(phone, code));
         }catch (Exception exception){
             exception.printStackTrace();
             return false;
         }
-        return false;
     }
 }

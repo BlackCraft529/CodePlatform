@@ -141,7 +141,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .userDetailsService(userDetailsService).
                 //无权限即可访问的页面管理
                     and().authorizeRequests().
-                antMatchers("/getSchools","/getLocations","/checkOrCreateVerifyStatus").permitAll().
+                antMatchers("/getSchools","/getLocations","/checkOrCreateVerifyStatus",
+                        "/verifyCodeAndRegister").permitAll().
                 //会话管理
                         and().sessionManagement().
                 maximumSessions(1).//同一账号同时登录最大用户数

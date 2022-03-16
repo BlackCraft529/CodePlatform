@@ -34,13 +34,13 @@ public class CodeUtil {
      * 发送验证码请求
      *
      * @param phone       手机号
-     * @param account     账户
      * @return            是否发送成功
      */
-    public static String sendVerifyCode(String phone, String account){
+    public static String sendVerifyCode(String phone){
         try {
             String result = sendMsg(phone);
-            if (result.split(":")[0].equals("200")) {
+            System.out.println("吊毛："+result);
+            if (result.split(":")[0].equals("success")) {
                 //发送成功
                 return "true:"+result.split(":")[1];
             }
@@ -51,7 +51,40 @@ public class CodeUtil {
         }
     }
 
-    public static String sendMsg(String phone) throws IOException {
+    public static boolean verifyCode(String phone,String sum) throws IOException {
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        HttpPost post = new HttpPost(SERVER_URL);
+
+        String curTime=String.valueOf((new Date().getTime()/1000L));
+        String checkSum=CheckSumBuilder.getCheckSum(APP_SECRET,NONCE,curTime);
+
+        //设置请求的header
+        post.addHeader("AppKey",APP_KEY);
+        post.addHeader("Nonce",NONCE);
+        post.addHeader("CurTime",curTime);
+        post.addHeader("CheckSum",checkSum);
+        post.addHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
+
+        //设置请求参数
+        List<NameValuePair> nameValuePairs =new ArrayList<>();
+        nameValuePairs.add(new BasicNameValuePair("mobile",phone));
+        nameValuePairs.add(new BasicNameValuePair("code",sum));
+
+        post.setEntity(new UrlEncodedFormEntity(nameValuePairs,"utf-8"));
+
+        //执行请求
+        HttpResponse response=httpclient.execute(post);
+        String responseEntity= EntityUtils.toString(response.getEntity(),"utf-8");
+
+        //判断是否发送成功，发送成功返回true
+        String code= jsonObjectMapper.readTree(responseEntity).get("code").asText();
+        if (code.equals("200")){
+            return true;
+        }
+        return false;
+    }
+
+    private static String sendMsg(String phone) throws IOException {
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost post = new HttpPost(SERVER_URL);
 

@@ -59,6 +59,7 @@ public class UserController {
     @RequestMapping(value = "/verifyCodeAndRegister",produces = {"text/plain;charset=UTF-8"})
     @ResponseBody
     public String getUserInfo(@RequestBody String jsonData) throws JsonProcessingException {
+        System.out.println(jsonData);
         JsonNode node = jsonObjectMapper.readTree(jsonData);
         String phone = node.get("phone").asText();
         String code = node.get("code").asText();
@@ -100,12 +101,19 @@ public class UserController {
      */
     @RequestMapping(value = "/checkOrCreateVerifyStatus",produces = {"text/plain;charset=UTF-8"})
     @ResponseBody
-    public String createVerifyStatus(@RequestBody String jsonData) throws JsonProcessingException, ParseException {
-        JsonNode node = jsonObjectMapper.readTree(jsonData);
-        String account = node.get("account").asText();
-        String phone = node.get("phone").asText();
-        //发送验证码后返回前端数据
-        return jsonObjectMapper.valueToTree(verifyAndSendCode(account, phone)).toString();
+    public String createVerifyStatus(@RequestBody String jsonData) {
+        try {
+            JsonNode node = jsonObjectMapper.readTree(jsonData);
+            String account = node.get("account").asText();
+            String phone = node.get("phone").asText();
+            //发送验证码后返回前端数据
+            String res = jsonObjectMapper.valueToTree(verifyAndSendCode(account, phone)).toString();
+            System.out.println("结果: " + res);
+            return res;
+        }catch (Exception exception){
+            exception.printStackTrace();
+            return "null";
+        }
     }
 
 
@@ -116,13 +124,12 @@ public class UserController {
      * @param phone      手机
      * @return           结果
      */
-    private JsonResult verifyAndSendCode(String account, String phone) throws ParseException {
+    public JsonResult verifyAndSendCode(String account, String phone) throws ParseException {
         //该用户已经注册或者用户名已经被预定
-        if ( sysUserService.selectByAccount(account) != null ||
-                verifyStatusService.selectByAccount(account) != null){
+        if ( sysUserService.selectByAccount(account) != null ){
             JsonResult jsonResult = new JsonResult(false);
             jsonResult.setErrorCode(ResultCode.USER_ACCOUNT_ALREADY_EXIST.getCode());
-            jsonResult.setErrorMsg("用户已经存在");
+            jsonResult.setErrorMsg("用户名已经被注册!");
             return jsonResult;
         }
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -146,7 +153,8 @@ public class UserController {
             //验证码已经解除冷却 且 账户尚未完成注册 - 删除已有验证状态信息,重新生成
             verifyStatusService.deleteVerifyStatusByPhone(phone);
         }
-        String result = CodeUtil.sendVerifyCode(phone, account);
+        String result = CodeUtil.sendVerifyCode(phone);
+        System.out.println("超级牛逼:"+result);
         if (result.split(":")[0].equalsIgnoreCase("true")){
             //发送验证码成功 - 返回前端数据
             verifyStatus = new VerifyStatus(account, phone, result.split(":")[1]);
@@ -178,22 +186,31 @@ public class UserController {
      */
     private JsonResult registerUser(String account, String password, String nickName, String school, String email, String location, String phone){
         try{
+            int successNum = 0;
             SysUser sysUser = new SysUser(account, nickName, password);
             //插入用户基本信息
-            sysUserService.insert(sysUser);
+            successNum+=sysUserService.insert(sysUser);
             sysUser = sysUserService.selectByAccount(account);
             //插入用户关系表
             SysUserRoleRelation sysUserRoleRelation = new SysUserRoleRelation(sysUser.getId(), RoleCode.STUDENT.getRoleCode());
-            sysUserRoleRelationService.insertNewSysUserRoleRelation(sysUserRoleRelation);
+            successNum+=sysUserRoleRelationService.insertNewSysUserRoleRelation(sysUserRoleRelation);
             //插入角色基本信息表
             UserInfo userInfo = new UserInfo(sysUser.getId(), "暂未填写", email, phone, location, school, nickName);
-            userInfoService.insertUserInfo(userInfo);
+            successNum+=userInfoService.insertUserInfo(userInfo);
             //更新验证信息表
-            verifyStatusService.updateVerifyStatusComplete(phone, true);
-            JsonResult jsonResult = new JsonResult(true);
-            jsonResult.setErrorCode(ResultCode.SUCCESS.getCode());
+            successNum+=verifyStatusService.updateVerifyStatusComplete(phone, true);
+            JsonResult jsonResult;
+            if (successNum == 4){
+                jsonResult = new JsonResult(true);
+                jsonResult.setErrorCode(ResultCode.SUCCESS.getCode());
+            }else {
+                jsonResult = new JsonResult(false);
+                jsonResult.setErrorCode(ResultCode.SQL_ERROR.getCode());
+                jsonResult.setErrorMsg("数据库错误,请联系管理员");
+            }
             return jsonResult;
         }catch (Exception exception){
+            exception.printStackTrace();
             JsonResult jsonResult = new JsonResult(false);
             jsonResult.setErrorCode(ResultCode.SQL_ERROR.getCode());
             jsonResult.setErrorMsg("数据库错误,请联系管理员");

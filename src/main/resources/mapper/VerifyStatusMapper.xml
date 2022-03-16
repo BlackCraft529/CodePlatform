@@ -5,9 +5,9 @@
         <result property="phone" column="phone" jdbcType="VARCHAR"/>
         <result property="account" column="account" jdbcType="VARCHAR"/>
         <result property="code" column="code" jdbcType="VARCHAR"/>
-        <result property="sendDate" column="send_date" jdbcType="DATE"/>
+        <result property="sendDate" column="send_date" jdbcType="TIMESTAMP"/>
         <result property="complete" column="complete" jdbcType="BOOLEAN"/>
-        <result property="completeDate" column="complete_date" jdbcType="DATE"/>
+        <result property="completeDate" column="complete_date" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <select id="selectByPhone" resultMap="VerifyStatusMap">

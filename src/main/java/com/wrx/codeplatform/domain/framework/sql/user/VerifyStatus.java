@@ -1,5 +1,7 @@
 package com.wrx.codeplatform.domain.framework.sql.user;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import java.util.Date;
 
@@ -9,6 +11,8 @@ import java.util.Date;
  */
 @Data
 public class VerifyStatus {
+
+    @TableId(value = "phone",type = IdType.INPUT)
     private String phone;
     private String account;
     private String code;

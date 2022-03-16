@@ -1,5 +1,7 @@
 package com.wrx.codeplatform.domain.framework.sql.user;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 /**
@@ -8,6 +10,7 @@ import lombok.Data;
  */
 @Data
 public class UserInfo {
+    @TableId(value = "userId",type = IdType.INPUT)
     private int userId;
     private String description;
     private String email;

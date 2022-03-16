@@ -7,7 +7,8 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/cpdb?characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/cpdb?autoReconnect=true&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+    #url: jdbc:mysql://localhost:3306/cpdb?characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
     #    url: jdbc:mysql://localhost:3306/codeplatform?characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
     #    url: jdbc:mysql://mcbufferdatabase.mysql.rds.aliyuncs.com:3306/codeplatform?characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
     hikari:
@@ -38,7 +39,7 @@ mybatis-plus:
   # 如果是放在resource目录 classpath:/mapper/*Mapper.xml
   mapper-locations: classpath:mapper/*.xml, classpath:mybatis/mapping/**/*.xml
   #实体扫描，多个package用逗号或者分号分隔
-  typeAliasesPackage: com.wrx.codeplatform.domain.framework.sql.*
+  typeAliasesPackage: com.wrx.codeplatform.domain.framework.sql.code.*,com.wrx.codeplatform.domain.framework.sql.common.*,com.wrx.codeplatform.domain.framework.sql.container.*,com.wrx.codeplatform.domain.framework.sql.permission.*,com.wrx.codeplatform.domain.framework.sql.user.*
   global-config:
     #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
     id-type: 0

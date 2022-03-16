@@ -1,6 +1,7 @@
 package com.wrx.codeplatform.framework.mapper;
 
 import com.wrx.codeplatform.domain.framework.sql.permission.SysPermission;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
  * @since 2019-08-29 21:13:29
  */
 @Repository
+//@Mapper
 public interface SysPermissionMapper {
 
     /**

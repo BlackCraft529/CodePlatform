@@ -8,7 +8,6 @@
         <result property="permissionName" column="permission_name" jdbcType="VARCHAR"/>
     </resultMap>
 
-    <!--查询单个-->
     <select id="queryById" resultMap="SysPermissionMap">
         select
           id, permission_code, permission_name
@@ -16,7 +15,6 @@
         where id = #{id}
     </select>
 
-    <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="SysPermissionMap">
         select
           id, permission_code, permission_name
@@ -24,7 +22,6 @@
         limit #{offset}, #{limit}
     </select>
 
-    <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="SysPermissionMap">
         select
           id, permission_code, permission_name
@@ -42,13 +39,37 @@
         </where>
     </select>
 
-    <!--新增所有列-->
+    <select id="selectListByUser" resultMap="SysPermissionMap">
+        SELECT
+            p.*
+        FROM
+            sys_user AS u
+                LEFT JOIN sys_user_role_relation AS ur
+                          ON u.id = ur.user_id
+                LEFT JOIN sys_role AS r
+                          ON r.id = ur.role_id
+                LEFT JOIN sys_role_permission_relation AS rp
+                          ON r.id = rp.role_id
+                LEFT JOIN sys_permission AS p
+                          ON p.id = rp.permission_id
+        WHERE u.id = #{userId}
+    </select>
+
+    <select id="selectListByPath" resultMap="SysPermissionMap">
+        SELECT
+            pe.*
+        FROM
+            sys_permission pe
+                LEFT JOIN sys_request_path_permission_relation re ON re.permission_id = pe.id
+                LEFT JOIN sys_request_path pa ON pa.id = re.url_id
+        WHERE pa.url = #{path}
+    </select>
+
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
         insert into sys_permission(permission_code, permission_name)
         values (#{permissionCode}, #{permissionName})
     </insert>
 
-    <!--通过主键修改数据-->
     <update id="update">
         update sys_permission
         <set>
@@ -62,33 +83,10 @@
         where id = #{id}
     </update>
 
-    <!--通过主键删除-->
     <delete id="deleteById">
         delete from sys_permission where id = #{id}
     </delete>
-    <select id="selectListByUser" resultMap="SysPermissionMap">
-        SELECT
-        p.*
-        FROM
-        sys_user AS u
-        LEFT JOIN sys_user_role_relation AS ur
-        ON u.id = ur.user_id
-        LEFT JOIN sys_role AS r
-        ON r.id = ur.role_id
-        LEFT JOIN sys_role_permission_relation AS rp
-        ON r.id = rp.role_id
-        LEFT JOIN sys_permission AS p
-        ON p.id = rp.permission_id
-        WHERE u.id = #{userId}
-    </select>
-    <select id="selectListByPath" resultMap="SysPermissionMap">
-        SELECT
-            pe.*
-        FROM
-            sys_permission pe
-        LEFT JOIN sys_request_path_permission_relation re ON re.permission_id = pe.id
-        LEFT JOIN sys_request_path pa ON pa.id = re.url_id
-        WHERE pa.url = #{path}
-    </select>
+
+
 
 </mapper>

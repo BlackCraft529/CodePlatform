@@ -7,7 +7,7 @@
         <result property="creator" column="creator" jdbcType="INTEGER"/>
         <result property="name" column="name" jdbcType="VARCHAR"/>
         <result property="description" column="description" jdbcType="VARCHAR"/>
-        <result property="createDate" column="create_date" jdbcType="DATE"/>
+        <result property="createDate" column="create_date" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <select id="selectContainerById" resultMap="ContainerMap">

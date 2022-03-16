@@ -3,6 +3,7 @@ package com.wrx.codeplatform.framework.service.impl;
 import com.wrx.codeplatform.domain.framework.sql.permission.SysPermission;
 import com.wrx.codeplatform.framework.mapper.SysPermissionMapper;
 import com.wrx.codeplatform.framework.service.SysPermissionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
  */
 @Service("sysPermissionService")
 public class SysPermissionServiceImpl implements SysPermissionService {
-    @Resource
+    @Autowired
     private SysPermissionMapper sysPermissionMapper;
 
     /**

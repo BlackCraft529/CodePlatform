@@ -1,7 +1,6 @@
 package com.wrx.codeplatform.framework.service;
 
 import com.wrx.codeplatform.domain.framework.sql.user.VerifyStatus;
-import com.wrx.codeplatform.domain.result.JsonResult;
 
 /**
  * @author 魏荣轩
