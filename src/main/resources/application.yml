@@ -8,7 +8,7 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/cpdb?autoReconnect=true&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
-    #url: jdbc:mysql://localhost:3306/cpdb?characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
+#    url: jdbc:mysql://localhost:3306/cpdb?characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
     #    url: jdbc:mysql://localhost:3306/codeplatform?characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
     #    url: jdbc:mysql://mcbufferdatabase.mysql.rds.aliyuncs.com:3306/codeplatform?characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
     hikari:

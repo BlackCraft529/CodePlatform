@@ -1,5 +1,6 @@
 package com.wrx.codeplatform.framework.service;
 
+import com.wrx.codeplatform.domain.framework.sql.user.SysUser;
 import com.wrx.codeplatform.domain.framework.sql.user.UserInfo;
 
 /**
@@ -14,6 +15,14 @@ public interface UserInfoService {
      * @return        用户信息
      */
     UserInfo selectByUserId(int userId);
+
+    /**
+     * 根据用户账户查找用户信息
+     *
+     * @param sysUser   账户
+     * @return          用户信息
+     */
+    UserInfo selectByUserAccount(SysUser sysUser);
 
     /**
      * 根据用户ID更新用户描述

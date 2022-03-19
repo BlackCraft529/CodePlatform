@@ -1,5 +1,6 @@
 package com.wrx.codeplatform.framework.service.impl;
 
+import com.wrx.codeplatform.domain.framework.sql.user.SysUser;
 import com.wrx.codeplatform.domain.framework.sql.user.UserInfo;
 import com.wrx.codeplatform.framework.mapper.UserInfoMapper;
 import com.wrx.codeplatform.framework.service.UserInfoService;
@@ -24,7 +25,18 @@ public class UserInfoServiceImpl implements UserInfoService {
      */
     @Override
     public UserInfo selectByUserId(int userId) {
-        return null;
+        return userInfoMapper.selectByUserId(userId);
+    }
+
+    /**
+     * 根据用户账户查找用户信息
+     *
+     * @param sysUser 账户
+     * @return 用户信息
+     */
+    @Override
+    public UserInfo selectByUserAccount(SysUser sysUser) {
+        return userInfoMapper.selectByUserId(sysUser.getId());
     }
 
     /**

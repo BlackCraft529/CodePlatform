@@ -14,13 +14,12 @@ import com.wrx.codeplatform.domain.result.JsonResult;
 import com.wrx.codeplatform.framework.config.common.PwdEncoder;
 import com.wrx.codeplatform.framework.service.*;
 import com.wrx.codeplatform.utils.common.TimeUtil;
+import com.wrx.codeplatform.utils.common.TokenUtil;
+import com.wrx.codeplatform.utils.data.SessionStorage;
 import com.wrx.codeplatform.utils.mobile.CodeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,8 +32,6 @@ import java.util.Date;
  */
 @RestController
 public class UserController {
-    //仅有该角色的用户才可以访问
-    //@PreAuthorize("hasAnyAuthority('modify_user')")
 
     @Autowired
     private SysUserService sysUserService;
@@ -51,6 +48,71 @@ public class UserController {
     private final ObjectMapper jsonObjectMapper =  new ObjectMapper();
 
     /**
+     * 用户登出
+     *
+     * @param jsonData  json数据
+     * @return          结果
+     * @throws JsonProcessingException   转换错误
+     */
+    @PreAuthorize("hasAnyAuthority('view_self')")
+    @RequestMapping(value = "/logout",produces = {"text/plain;charset=UTF-8"})
+    @ResponseBody
+    public String logout(@RequestBody String jsonData) throws JsonProcessingException {
+        JsonNode node = jsonObjectMapper.readTree(jsonData);
+        String token = node.get("token").asText();
+        String account = TokenUtil.validToken(token);
+        if (SessionStorage.pwdMap.get(account) == null ){
+            //用户不存在
+            JsonResult jsonResult = new JsonResult(false);
+            jsonResult.setErrorCode(ResultCode.USER_ACCOUNT_NOT_EXIST.getCode());
+            jsonResult.setErrorMsg("无效的登入请求!");
+            return jsonObjectMapper.valueToTree(jsonResult).toString();
+        }
+        //删除缓存
+        SessionStorage.pwdMap.remove(account);
+        JsonResult jsonResult = new JsonResult(true);
+        jsonResult.setErrorCode(ResultCode.SUCCESS.getCode());
+        return jsonObjectMapper.valueToTree(jsonResult).toString();
+    }
+
+
+    /**
+     * 获取用户信息
+     *
+     * @param jsonData   json数据
+     * @return           用户详细信息
+     * @throws JsonProcessingException   转换错误
+     */
+    @PreAuthorize("hasAnyAuthority('view_self')")
+    @RequestMapping(value = "/getUserInfo",produces = {"text/plain;charset=UTF-8"})
+    @ResponseBody
+    public String getUserInfo(@RequestBody String jsonData) throws JsonProcessingException {
+        JsonNode node = jsonObjectMapper.readTree(jsonData);
+        String token = node.get("token").asText();
+        String account = TokenUtil.validToken(token);
+        SysUser sysUser = sysUserService.selectByAccount(account);
+        if (sysUser == null ){
+            //用户不存在
+            JsonResult jsonResult = new JsonResult(false);
+            jsonResult.setErrorCode(ResultCode.USER_ACCOUNT_NOT_EXIST.getCode());
+            jsonResult.setErrorMsg("账号不存在或登入过期");
+            return jsonObjectMapper.valueToTree(jsonResult).toString();
+        }
+        UserInfo userInfo = userInfoService.selectByUserAccount(sysUser);
+        if (userInfo == null){
+            //用户信息不存在
+            JsonResult jsonResult = new JsonResult(false);
+            jsonResult.setErrorCode(ResultCode.USER_ACCOUNT_NOT_EXIST.getCode());
+            jsonResult.setErrorMsg("账号信息不存在");
+            return jsonObjectMapper.valueToTree(jsonResult).toString();
+        }
+        JsonResult jsonResult = new JsonResult(true);
+        jsonResult.setErrorCode(ResultCode.SUCCESS.getCode());
+        jsonResult.setData(userInfo);
+        return jsonObjectMapper.valueToTree(jsonResult).toString();
+    }
+
+    /**
      * 获取用户主页详细数据
      *
      * @param jsonData json data
@@ -58,17 +120,16 @@ public class UserController {
      */
     @RequestMapping(value = "/verifyCodeAndRegister",produces = {"text/plain;charset=UTF-8"})
     @ResponseBody
-    public String getUserInfo(@RequestBody String jsonData) throws JsonProcessingException {
-        System.out.println(jsonData);
+    public String verifyCodeAndRegisterUser(@RequestBody String jsonData) throws JsonProcessingException {
         JsonNode node = jsonObjectMapper.readTree(jsonData);
         String phone = node.get("phone").asText();
         String code = node.get("code").asText();
         String account = node.get("account").asText();
         String password = node.get("password").asText();
         String nickName = node.get("nickname").asText();
-        String school = node.get("school").asText();
+        String school = DataPool.schools.get(node.get("school").asInt());
         String email = node.get("email").asText();
-        String location = node.get("location").asText();
+        String location = DataPool.locations.get(node.get("location").asInt());
         //对用户手机以及验证码进行校验
         //手机尚未存在验证码信息
         if (verifyStatusService.selectVerifyStatusByPhone(phone) == null){
@@ -86,10 +147,8 @@ public class UserController {
             jsonResult.setErrorMsg("验证码失效,请重新获取");
             return jsonObjectMapper.valueToTree(jsonResult).toString();
         }
-        //注册
-        //密码加密
+        //注册 + 密码加密
         password = PwdEncoder.getPasswordEncoder().encode(password);
-        //String account, String password, String nickName, String school, String email, String location, String phone
         return jsonObjectMapper.valueToTree(registerUser(account, password, nickName, school, email, location, phone)).toString();
     }
 

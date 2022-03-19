@@ -94,8 +94,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * 解决无法直接注入 AuthenticationManager
-     * @return
-     * @throws Exception
+     *
+     * @return 1
+     * @throws Exception 1
      */
     @Bean
     @Override
@@ -108,8 +109,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.formLogin().loginProcessingUrl("/loginAction").permitAll().and()
                 .cors().and().csrf().disable();
         http.authorizeRequests().
-                //antMatchers("/getUser").hasAuthority("query_user").
-                //antMatchers("/**").fullyAuthenticated().
                         withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
                     @Override
                     public <O extends FilterSecurityInterceptor> O postProcess(O o) {
@@ -123,11 +122,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 permitAll().//允许所有用户
                 logoutSuccessHandler(logoutSuccessHandler).//登出成功处理逻辑
                 deleteCookies("JSESSIONID").//登出之后删除cookie
-                //登入
-//                        and().formLogin().
-//                permitAll().//允许所有用户
-//                successHandler(authenticationSuccessHandler).//登录成功处理逻辑
-//                failureHandler(authenticationFailureHandler).//登录失败处理逻辑
                 //异常处理(权限拒绝、登录失效等)
                         and().exceptionHandling().
                 accessDeniedHandler(accessDeniedHandler).//权限拒绝处理逻辑
@@ -149,38 +143,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 expiredSessionStrategy(sessionInformationExpiredStrategy);//会话失效(账号被挤下线)处理逻辑
         http.addFilterBefore(securityInterceptor, FilterSecurityInterceptor.class);
         http.addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-//        //自定义登录界面
-//        http.formLogin()
-//                .and().authorizeRequests().antMatchers("/","/test","/login").permitAll() //设置不需要认证的路径
-//                //指用户只有admins权限才能访问/test/index路径
-//                //.antMatchers("/test/index").hasAnyAuthority("admins")
-//                //方法二 多个权限
-//                //.antMatchers("/test/index").hasAnyAuthority("admins,index")
-//                //方法三 角色权限控制  用户需要有角色权限: "ROLE_player"
-//                //.antMatchers("/test/index").hasRole("player")
-//                //方法四 角色权限控制  用户需要有角色权限: "ROLE_player" 或者"ROLE_creator"
-//                .antMatchers("/full").hasRole("player,creator")
-//                .anyRequest().authenticated()  //所有请求都可以访问
-//                //设置令牌-记住我 功能
-//                .and()
-//                .rememberMe()
-//                .key(rememberMeKey)
-//                .rememberMeServices(getPersistentTokenBasedRememberMeServices())
-//                .tokenRepository(persistentTokenRepository())
-//                .tokenValiditySeconds(60 * 60 * 24)
-//                .userDetailsService(userDetailsService)
-//                .and()
-//                //设置无权限处理方案
-//                .exceptionHandling().accessDeniedHandler(getAccessDeniedHandler())
-//                .and().csrf().disable();  //关闭csrf防护
-//        //启用自定义的过滤器
+        //启用自定义的过滤器
         http.addFilterAt(userAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
-
-//    @Bean
-//    public UsernamePasswordAuthenticationFilter userAuthenticationFilter() {
-//        return new UsernamePasswordAuthenticationFilter();
-//    }
 
     @Bean
     UserDetailsService getUserDetailsService(){
@@ -217,7 +182,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public PersistentTokenRepository persistentTokenRepository() {
         JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
         tokenRepository.setDataSource(dataSource);
-//        tokenRepository.setCreateTableOnStartup(true);
+        //tokenRepository.setCreateTableOnStartup(true);
         return tokenRepository;
     }
 

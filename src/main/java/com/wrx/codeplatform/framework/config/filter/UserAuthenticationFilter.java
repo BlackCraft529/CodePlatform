@@ -49,15 +49,12 @@ public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilt
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         String token = request.getParameter("token");
         if (token != null && !token.equals("")){
-            System.out.println(token);
             try {
                 String account = TokenUtil.validToken(token);
-                System.out.println(account);
                 SysUser sysUser = sysUserService.selectByAccount(account);
                 if (sysUser == null) {
                     throw new RuntimeException("用户不存在");
                 }
-//                Collection<? extends GrantedAuthority> grantedAuthorities = new ArrayList<>();
                 //获取该用户所拥有的权限
                 List<SysPermission> sysPermissions = sysPermissionService.selectListByUser(sysUser.getId());
                 StringBuilder auths = new StringBuilder();

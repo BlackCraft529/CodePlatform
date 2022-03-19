@@ -18,6 +18,7 @@ public class UserInfo {
     private String location;
     private String school;
     private String nickName;
+    private String headPortrait;
 
     public UserInfo(int userId, String description, String email, String phone, String location, String school, String nickName){
         this.userId = userId;

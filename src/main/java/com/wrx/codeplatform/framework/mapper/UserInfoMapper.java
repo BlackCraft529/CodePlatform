@@ -17,6 +17,7 @@ public interface UserInfoMapper {
      */
     UserInfo selectByUserId(int userId);
 
+
     /**
      * 更新用户信息
      *

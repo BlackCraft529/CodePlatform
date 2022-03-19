@@ -5,9 +5,15 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
-@MapperScan("com.wrx.codeplatform.framework.mapper")
 
+/**
+ * TODO:
+ *  1.代码列表界面的隐藏
+ *  2.代码界面的响应式：使用表格布局
+ *
+ */
+@MapperScan("com.wrx.codeplatform.framework.mapper")
+@SpringBootApplication
 public class CodePlatformApplication {
 
     public static void main(String[] args) {

@@ -1,4 +1,4 @@
-package com.wrx.codeplatform.utils.code;
+package com.wrx.codeplatform.utils.code.util;
 
 import java.util.regex.Pattern;
 

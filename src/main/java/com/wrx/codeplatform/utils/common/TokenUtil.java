@@ -85,12 +85,10 @@ public class TokenUtil {
                 if (sysUser == null) {
                     throw new RuntimeException("用户不存在");
                 }
-                System.out.println(account);
                 //获取该用户所拥有的权限
                 List<SysPermission> sysPermissions = sysPermissionService.selectListByUser(sysUser.getId());
                 StringBuilder auths = new StringBuilder();
                 for (SysPermission per: sysPermissions){
-                    System.out.println(per.getPermissionCode());
                     auths.append(per.getPermissionCode()).append(",");
                 }
                 Collection<? extends GrantedAuthority> authorities =
@@ -100,7 +98,7 @@ public class TokenUtil {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(account, SessionStorage.pwdMap.get(account), authorities);
                 return authenticationManager.authenticate(usernamePasswordAuthenticationToken);
             } catch (Exception exception) {
-                System.out.println("Token Error:"+exception.getMessage());
+                //System.out.println("Token Error:"+exception.getMessage());
             }
         }
         return null;

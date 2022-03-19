@@ -10,10 +10,11 @@
         <result property="location" column="location" jdbcType="VARCHAR"/>
         <result property="school" column="school" jdbcType="VARCHAR"/>
         <result property="nickName" column="nick_name" jdbcType="VARCHAR"/>
+        <result property="headPortrait" column="head_portrait" jdbcType="VARCHAR"/>
     </resultMap>
 
     <select id="selectByUserId" resultMap="UserInfoMap">
-        select * from sys_permission where user_id = #{userId}
+        select * from user_info where user_id = #{userId};
     </select>
 
     <update id="updateUserInfo">
@@ -36,6 +37,9 @@
             </if>
             <if test="nickName != null and nickName != ''">
                 nick_name = #{nickName},
+            </if>
+            <if test="headPortrait != null and headPortrait != ''">
+                head_portrait = #{headPortrait},
             </if>
         </set>
         where user_id = #{userId}

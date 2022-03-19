@@ -10,6 +10,8 @@ import java.util.Date;
 @Data
 public class Code {
     private int id;
+    private String name;
+    private String description;
     private int userId;
     private String filePath;
     private double score;

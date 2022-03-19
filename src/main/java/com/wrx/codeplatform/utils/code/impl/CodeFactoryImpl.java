@@ -1,8 +1,8 @@
 package com.wrx.codeplatform.utils.code.impl;
 
 import com.wrx.codeplatform.utils.code.CodeFactory;
-import com.wrx.codeplatform.utils.code.DelComments;
-import com.wrx.codeplatform.utils.code.DelVariables;
+import com.wrx.codeplatform.utils.code.util.DelComments;
+import com.wrx.codeplatform.utils.code.util.DelVariables;
 
 import java.util.Collections;
 import java.util.HashSet;
