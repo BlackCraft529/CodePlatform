@@ -1,6 +1,7 @@
 package com.wrx.codeplatform.utils.code.impl;
 
 import com.wrx.codeplatform.utils.code.TransformersModel;
+import com.wrx.codeplatform.utils.code.util.DelComments;
 import com.wrx.codeplatform.utils.code.util.InputStreamRunnable;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -21,6 +22,28 @@ public class SentenceTransformersModel implements TransformersModel {
     public SentenceTransformersModel(){ }
     private final String pythonPath = "D:\\代码\\sentence-transformers\\examples\\applications\\cross-encoder\\cross-encoder-interface.py",
             pythonEnvironment = "D:\\代码\\sentence-transformers\\venv\\Scripts\\python.exe";
+
+    /**
+     * 获取最后的输出结果
+     *
+     * @param args1  代码片段1
+     * @param args2  代码片段2
+     * @return       百分比结果
+     */
+    @Override
+    public String getCleanResult(String args1, String args2){
+        //简单格式化代码
+        args1 = DelComments.delComments(args1);
+        args2 = DelComments.delComments(args2);
+        args1 = args1.replaceAll("\n","").replaceAll(" ","").replaceAll("\t","");
+        args2 = args2.replaceAll("\n","").replaceAll(" ","").replaceAll("\t","");
+        //获取输出流
+        List<String> resultList = getModelOut(args1, args2);
+        System.out.println("getCleanResult："+resultList.get(resultList.size()-1));
+        //返回百分比
+        return resultList.get(resultList.size()-1);
+    }
+
     /**
      * 获取输出流
      *
@@ -59,12 +82,12 @@ public class SentenceTransformersModel implements TransformersModel {
         BufferedInputStream bis = new BufferedInputStream(process.getInputStream());
         sReader = new InputStreamReader(bis, StandardCharsets.UTF_8);
         bReader = new BufferedReader(sReader);
-        StringBuilder sb = new StringBuilder();
         String line;
         List<String> returnedLine = new ArrayList<>();
         while ((line = bReader.readLine()) != null) {
             returnedLine.add(line);
         }
+        t.stop();
         bReader.close();
         process.destroy();
         return returnedLine;

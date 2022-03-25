@@ -1,7 +1,9 @@
 package com.wrx.codeplatform.framework.service.impl;
 
 import com.wrx.codeplatform.domain.framework.sql.container.ContainerLink;
+import com.wrx.codeplatform.framework.mapper.ContainerLinkMapper;
 import com.wrx.codeplatform.framework.service.ContainerLinkService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -11,6 +13,9 @@ import java.util.List;
  */
 @Service("containerLinkService")
 public class ContainerLinkServiceImpl implements ContainerLinkService {
+
+    @Autowired
+    private ContainerLinkMapper containerLinkMapper;
 
     /**
      * 更新关系合集列表
@@ -32,6 +37,17 @@ public class ContainerLinkServiceImpl implements ContainerLinkService {
     @Override
     public int updateContainerLink(ContainerLink containerLink) {
         return 0;
+    }
+
+    /**
+     * 根据容器ID查询关系集合
+     *
+     * @param containerId 容器ID
+     * @return 关系集合
+     */
+    @Override
+    public List<ContainerLink> selectContainerLinkByContainerId(int containerId) {
+        return containerLinkMapper.selectContainerLinkByContainerId(containerId);
     }
 
     /**

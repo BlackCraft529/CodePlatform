@@ -1,126 +1,142 @@
 package com.wrx.codeplatform.utils.code.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wrx.codeplatform.domain.framework.entity.rechecking.RecheckingResultInit;
+import com.wrx.codeplatform.domain.framework.sql.code.Code;
+import com.wrx.codeplatform.domain.framework.sql.container.ContainerLink;
+import com.wrx.codeplatform.framework.service.CodeService;
+import com.wrx.codeplatform.framework.service.ContainerLinkService;
+import com.wrx.codeplatform.framework.service.ContainerService;
 import com.wrx.codeplatform.utils.code.CodeFactory;
-import com.wrx.codeplatform.utils.code.util.DelComments;
-import com.wrx.codeplatform.utils.code.util.DelVariables;
+import com.wrx.codeplatform.utils.code.TransformersModel;
+import com.wrx.codeplatform.utils.common.ServiceFactory;
+import com.wrx.codeplatform.utils.file.FileUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.HashSet;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @author 魏荣轩
  * @date 2022/3/13 14:12
  */
+@Component
 public class CodeFactoryImpl implements CodeFactory {
-    private HashSet<String> keyWordSet = new HashSet<String>();
-    private final String forReplaceCode = "Variable";
 
     /**
-     * C/C++关键字
-     * 初始化工厂方法
+     * json工具对象
      */
-    public CodeFactoryImpl(){
-        String keyWords = "and|asm|auto|bad_cast|bad_typeid|bool|break|case|catch|char|class|const|const_cast" +
-                "|continue|default|delete|do|double|dynamic_cast|else|enum|except|explicit|extern|false|finally|float|for" +
-                "|friend|goto|if|inline|int|long|mutable|namespace|new|operator|or|private|protected|public|register|reinterpret_cast" +
-                "|return|short|signed|sizeof|static|static_cast|struct|switch|template|this|throw|true|try|type_info|typedef" +
-                "|typeid|typename|union|unsigned|using|virtual|void|volatile|wchar_t|while";
-        String[] list = keyWords.split("\\|");
-        Collections.addAll(keyWordSet, list);
-    }
+    private final ObjectMapper jsonObjectMapper =  new ObjectMapper();
+
+    private final String RANGE_TYPE_CLASS = "type-class", RANGE_SYSTEM = "system";
+
 
     /**
-     * 将原始代码格式化为统一的代码格式
-     * 暂时只支持 C
+     * 代码查重
      *
-     * @param originalCode   原始代码
-     * @return               清洗后的代码片段
+     * @param range         范围
+     * @param model         模式
+     * @param targetClass   目标班级
+     * @param targetTeacher 目标老师
+     * @param targetCode    目标代码
      */
     @Override
-    public String getCleanCodePiece(String originalCode){
-        System.out.println(originalCode);
-        System.out.println("=========================");
-        String typeCode1 = clearAnnotationAndEnterPiece(originalCode);
-        System.out.println(typeCode1);
-        System.out.println("=========================");
-        String typeCode2 = clearDefineVariablePiece(originalCode);
-        System.out.println(typeCode2);
-        System.out.println("=========================");
-        return originalCode;
-    }
-
-    /**
-     * 清除代码中的注释 和 回车
-     * 注：空格不需要删除，模拟自然语言空格
-     *
-     * @param originalCode 原始代码
-     * @return 清洗后的代码片段
-     */
-    @Override
-    public String clearAnnotationAndEnterPiece(String originalCode) {
-        String code="";
-        try{
-            //删除所有注释
-            code = DelComments.delComments(originalCode);
-            //删除所有换行
-//            code=code.replaceAll("\\r", "").replaceAll("\\n", "");
-        }catch(Exception e){
-            e.printStackTrace();
+    public void recheckingCode(String range, String model, int targetClass, int targetTeacher, int targetCode) {
+        if (range.equalsIgnoreCase(RANGE_TYPE_CLASS)){
+            classRechecking(model, targetClass, targetCode);
+        }else {
+            systemRechecking(model, targetCode);
         }
-        return code;
     }
 
     /**
-     * 清除变量定义语句
+     * 班级查重
      *
-     * @param originalCode 原始代码
-     * @return 清洗后的代码
+     * @param model          模式
+     * @param targetClassId    指定班级
+     * @param targetCodeId     指定代码
+     * @notice 目标代码禁止存在空路径
      */
-    @Override
-    public String clearDefineVariablePiece(String originalCode) {
-        int pos1 = 0,pos2 = 0;
-        int len = originalCode.length();
-        boolean isString = false;
-        StringBuilder ret = new StringBuilder();
-        while(pos1<len){
-            pos2++;
-            if(isString){
-                if(pos2<len-1){
-                    if("\"".equals(originalCode.substring(pos2, pos2+1)) && !"\\".contentEquals(originalCode.subSequence(pos2-1, pos2))){
-                        isString  = false;
-                        ret.append(DelVariables.delVariables(originalCode.substring(pos1, pos2 + 1),"",""));
-                        pos1 = pos2+1;
-                    }
-                }else{
-                    break;
-                }
-            }else{
-                if(pos2<len-1){
-                    if("\"".equals(originalCode.substring(pos2, pos2+1))){
-                        isString  = true;
-                        ret.append(DelVariables.delVariables(originalCode.substring(pos1, pos2),"",""));
-                        pos1 = pos2;
-                    }
-                }else{
-                    ret.append(DelVariables.delVariables(originalCode.substring(pos1),"",""));
-                    break;
-                }
+    private void classRechecking(String model, int targetClassId, int targetCodeId){
+        //获取当前班级的所有文件关系集合
+        List<ContainerLink> containerLinkList = ServiceFactory.containerLinkService.selectContainerLinkByContainerId(targetClassId);
+        List<Code> codeList = new ArrayList<>();
+        for (ContainerLink containerLink : containerLinkList){
+            Code code = ServiceFactory.codeService.selectCodeById(containerLink.getFileId());
+            if (code!=null){
+                codeList.add(code);
             }
         }
-        return ret.toString();
+        System.out.println("targetClassId:"+targetClassId+"  targetCodeId:"+targetCodeId);
+        System.out.println("班级作业长度: "+codeList.size());
+        Code targetCode = ServiceFactory.codeService.selectCodeById(targetCodeId);
+        String targetCodeContent = FileUtil.readFileContent(targetCode.getFilePath());
+        RecheckingResultInit recheckingResult = new RecheckingResultInit(targetClassId, targetCodeId, model, RANGE_TYPE_CLASS);
+        Map<Integer, Double> perMap = new HashMap<>();
+        //开始获取文本进行查重
+        for (Code code: codeList){
+            //新建模型对象
+            TransformersModel transformersModel = new SentenceTransformersModel();
+            String content = FileUtil.readFileContent(code.getFilePath());
+            double result = -1.0;
+            if (content.equals("")){
+                perMap.put(code.getId(), result);
+                continue;
+            }
+            //带入模型获取结果
+            String cleanResult = transformersModel.getCleanResult(targetCodeContent, content);
+            try{
+                result = Double.parseDouble(cleanResult);
+                perMap.put(code.getId(), result);
+            }catch (Exception exception){
+                result = -1.0;
+                perMap.put(code.getId(), result);
+            }
+            System.out.println("查询结果输入: "+code.getId()+"::"+result);
+        }
+        recheckingResult.setResult(slotMapByValue(perMap));
+        System.out.println("排序完成: "+recheckingResult.getResult().size());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        recheckingResult.setCompleteDate(sdf.format(new Date()));
+        //将结果转换为Json存入数据库中
+        String jsonResult = jsonObjectMapper.valueToTree(recheckingResult).toString();
+        System.out.println("结果: "+jsonResult);
+        //设置结果
+        targetCode.setResult(jsonResult);
+        ServiceFactory.codeService.updateCode(targetCode);
+        System.out.println("查询完成,结果写入");
     }
 
     /**
-     * 将代码片段中的所有变量替换为统一字符
+     * 系统查重
      *
-     * @param originalCode   原始代码
-     * @param forReplaceCode 替换为的代码
-     * @return 清洗后的代码片段
+     * @param model        模式
+     * @param targetCode   目标代码
      */
-    @Override
-    public String replaceAllVariablePiece(String originalCode, String forReplaceCode) {
-        return originalCode;
+    private void systemRechecking(String model, int targetCode){
+
     }
 
-
+    /**
+     * 排序后并截取20位
+     *
+     * @param maps  map
+     * @return      list
+     */
+    private List<String> slotMapByValue(Map<Integer, Double> maps){
+        //自定义比较器
+        Comparator<Map.Entry<Integer, Double>> valCmp = (o1, o2) -> (int)(o2.getValue()-o1.getValue());
+        List<Map.Entry<Integer, Double>> list = new ArrayList<>(maps.entrySet());
+        Collections.sort(list,valCmp);
+        List<String> result = new ArrayList<>();
+        //输出map
+        for (Map.Entry<Integer, Double> integerDoubleEntry : list) {
+            result.add(integerDoubleEntry.getKey() + "::" + integerDoubleEntry.getValue());
+            if (result.size() >= 20){
+                break;
+            }
+        }
+        return result;
+    }
 }

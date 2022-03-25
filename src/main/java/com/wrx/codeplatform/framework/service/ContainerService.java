@@ -1,12 +1,21 @@
 package com.wrx.codeplatform.framework.service;
 
 import com.wrx.codeplatform.domain.framework.sql.container.Container;
+import java.util.List;
 
 /**
  * @author 魏荣轩
  * @date 2022/3/1 21:23
  */
 public interface ContainerService {
+
+    /**
+     * 查询容器信息
+     *
+     * @param id  Id
+     * @return    容器信息
+     */
+    Container selectContainerById(int id);
 
     /**
      * 更新容器名称
@@ -25,6 +34,30 @@ public interface ContainerService {
      * @return                影响条数
      */
     int updateContainerDescriptionById(int id, String description);
+
+    /**
+     * 根据文件ID查询容器集合
+     *
+     * @param fileId   文件ID
+     * @return         容器集合
+     */
+    List<Container> selectContainerByFileId(int fileId);
+
+    /**
+     * 查询用户所提交的所有文件的容器信息
+     *
+     * @param userId   用户ID
+     * @return         容器信息
+     */
+    List<Container> selectUsersAllContainer(int userId);
+
+    /**
+     * 根据创建者查询容器信息
+     *
+     * @param creator  创建者
+     * @return         容器列表
+     */
+    List<Container> selectContainerByCreator(int creator);
 
     /**
      * 删除容器

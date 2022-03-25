@@ -16,6 +16,7 @@ public class Code {
     private String filePath;
     private double score;
     private Date lastCheckDate;
+    private Date uploadDate;
     private String result;
 
 }

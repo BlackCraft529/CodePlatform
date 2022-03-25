@@ -17,4 +17,12 @@ public interface TransformersModel {
      */
     List<String> getModelOut(String args1,String args2);
 
+    /**
+     * 获取最后的输出结果
+     *
+     * @param args1  代码片段1
+     * @param args2  代码片段2
+     * @return       百分比结果
+     */
+    String getCleanResult(String args1, String args2);
 }

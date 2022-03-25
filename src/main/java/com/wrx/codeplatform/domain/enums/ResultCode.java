@@ -43,7 +43,9 @@ public enum ResultCode {
     PHONE_HAS_NULL_CODE(3007,"手机号暂未存在有效验证码"),
     PHONE_SERVICE_ERROR(3008,"运营商错误"),
     PHONE_USED(3009,"手机号已被注册"),
-    PHONE_NOT_EXISTS(3010,"手机号不存在");
+    PHONE_NOT_EXISTS(3010,"手机号不存在"),
+    CODE_NOT_EXISTS(3011,"代码文件不存在"),
+    RECHECKING_RESULT_NOT_EXISTS(3012,"代码查重结果为空");
 
     private Integer code;
     private String message;

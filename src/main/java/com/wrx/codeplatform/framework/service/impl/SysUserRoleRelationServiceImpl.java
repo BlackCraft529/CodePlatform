@@ -37,7 +37,7 @@ public class SysUserRoleRelationServiceImpl implements SysUserRoleRelationServic
      */
     @Override
     public List<SysUserRoleRelation> selectSysUserRoleRelationByUserId(int userId) {
-        return null;
+        return sysUserRoleRelationMapper.selectSysUserRoleRelationByUserId(userId);
     }
 
     /**
@@ -48,7 +48,7 @@ public class SysUserRoleRelationServiceImpl implements SysUserRoleRelationServic
      */
     @Override
     public List<SysUserRoleRelation> selectSysUserRoleRelationByRoleId(int roleId) {
-        return null;
+        return sysUserRoleRelationMapper.selectSysUserRoleRelationByRoleId(roleId);
     }
 
     /**

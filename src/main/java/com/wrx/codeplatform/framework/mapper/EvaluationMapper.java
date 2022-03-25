@@ -50,4 +50,22 @@ public interface EvaluationMapper {
      * @return             影响条数
      */
     int insertEvaluation(Evaluation evaluation);
+
+    /**
+     * 搜索评论
+     *
+     * @param fileId  文件ID
+     * @param start   开始位置
+     * @param add     偏移量
+     * @return        评论
+     */
+    List<Evaluation> selectEvaluationByPage(int fileId, int start, int add);
+
+    /**
+     * 搜索评论
+     *
+     * @param fileId  文件ID
+     * @return        评论
+     */
+    List<Evaluation> selectEvaluationByFileId(int fileId);
 }

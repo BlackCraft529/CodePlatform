@@ -10,6 +10,7 @@
         <result property="filePath" column="file_path" jdbcType="VARCHAR"/>
         <result property="score" column="score" jdbcType="DOUBLE"/>
         <result property="lastCheckDate" column="last_check_date" jdbcType="TIMESTAMP"/>
+        <result property="uploadDate" column="upload_date" jdbcType="TIMESTAMP"/>
         <result property="result" column="result" jdbcType="VARCHAR"/>
     </resultMap>
 
@@ -19,6 +20,14 @@
 
     <select id="selectCodesByUserId" resultMap="CodeMap">
         select * from user_code_files where user_id = #{userId}
+    </select>
+
+    <select id="selectCodesByIndex" resultMap="CodeMap">
+        select * from user_code_files where user_id=#{userId} order by upload_date desc limit #{start},#{add};
+    </select>
+
+    <select id="selectRecentCode" resultMap="CodeMap">
+        select * from user_code_files where user_id = #{userId} order by upload_date desc limit #{size};
     </select>
 
     <update id="updateCode">
@@ -33,14 +42,17 @@
             <if test="lastCheckDate != null">
                 last_check_date = #{lastCheckDate},
             </if>
+            <if test="uploadDate != null">
+                upload_date = #{uploadDate},
+            </if>
             <if test="result != null and result != ''">
                 `result` = #{result},
             </if>
             <if test="name != null and name != ''">
-                `result` = #{result},
+                `name` = #{name},
             </if>
             <if test="description != null and description != ''">
-                `result` = #{result},
+                `description` = #{description},
             </if>
         </set>
         where id = #{id}
@@ -51,7 +63,7 @@
     </delete>
 
     <insert id="insertCode" keyProperty="id" useGeneratedKeys="true">
-        insert into user_code_files (user_id, description, name, file_path, score, last_check_date, `result`)
-        values (#{userId}, #{description}, #{name}, #{filePath}, #{score}, #{lastCheckDate}, #{result})
+        insert into user_code_files (user_id, description, name, file_path, score, last_check_date, `result`, upload_date)
+        values (#{userId}, #{description}, #{name}, #{filePath}, #{score}, #{lastCheckDate}, #{result} , now())
     </insert>
 </mapper>

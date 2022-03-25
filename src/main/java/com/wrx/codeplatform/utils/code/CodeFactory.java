@@ -7,39 +7,16 @@ package com.wrx.codeplatform.utils.code;
 public interface CodeFactory {
 
     /**
-     * 将原始代码格式化为统一的代码格式
-     * 暂时只支持 C++
+     * 代码查重
      *
-     * @param originalCode   原始代码
-     * @return               清洗后的代码片段
+     * @param range          范围
+     * @param model          模式
+     * @param targetClass    目标班级
+     * @param targetTeacher  目标老师
+     * @param targetCode     目标代码
      */
-    String getCleanCodePiece(String originalCode);
+    void recheckingCode(String range, String model, int targetClass, int targetTeacher, int targetCode);
 
-    /**
-     * 清除代码中的注释 和 回车
-     * 注：空格不需要删除，模拟自然语言空格
-     *
-     * @param originalCode    原始代码
-     * @return                清洗后的代码片段
-     */
-    String clearAnnotationAndEnterPiece(String originalCode);
-
-    /**
-     * 清除变量定义语句
-     *
-     * @param originalCode    原始代码
-     * @return                清洗后的代码
-     */
-    String clearDefineVariablePiece(String originalCode);
-
-    /**
-     * 将代码片段中的所有变量替换为统一字符
-     *
-     * @param originalCode       原始代码
-     * @param forReplaceCode     替换为的代码
-     * @return                   清洗后的代码片段
-     */
-    String replaceAllVariablePiece(String originalCode, String forReplaceCode);
 
     
 }

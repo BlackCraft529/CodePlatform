@@ -47,10 +47,14 @@ public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilt
      */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        String token = request.getParameter("token");
+        String token = request.getHeader("token");
+//        String token1 = request.getParameter("token");
+        System.out.println("Token: "+token);
+//        System.out.println("Token1: "+token1);
         if (token != null && !token.equals("")){
             try {
                 String account = TokenUtil.validToken(token);
+                System.out.println("Account: "+account);
                 SysUser sysUser = sysUserService.selectByAccount(account);
                 if (sysUser == null) {
                     throw new RuntimeException("用户不存在");
@@ -59,6 +63,7 @@ public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilt
                 List<SysPermission> sysPermissions = sysPermissionService.selectListByUser(sysUser.getId());
                 StringBuilder auths = new StringBuilder();
                 for (SysPermission per: sysPermissions){
+                    System.out.println("权限: "+per.getPermissionName()+" : "+per.getPermissionCode());
                     auths.append(per.getPermissionCode()).append(",");
                 }
                 Collection<? extends GrantedAuthority> authorities =

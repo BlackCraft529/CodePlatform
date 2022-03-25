@@ -29,6 +29,14 @@ public interface SysUserService {
     List<SysUser> queryAllByLimit(int offset, int limit);
 
     /**
+     * 根据RoleId查询所有用户
+     *
+     * @param roleId  roleId
+     * @return        角色列表
+     */
+    List<SysUser> selectUserByRoleId(int roleId);
+
+    /**
      * 新增数据
      *
      * @param sysUser 实例对象

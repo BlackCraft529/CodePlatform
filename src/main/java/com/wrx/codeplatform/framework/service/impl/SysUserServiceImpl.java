@@ -1,10 +1,14 @@
 package com.wrx.codeplatform.framework.service.impl;
 
 import com.wrx.codeplatform.domain.framework.sql.user.SysUser;
+import com.wrx.codeplatform.domain.framework.sql.user.SysUserRoleRelation;
 import com.wrx.codeplatform.framework.mapper.SysUserMapper;
+import com.wrx.codeplatform.framework.mapper.SysUserRoleRelationMapper;
 import com.wrx.codeplatform.framework.service.SysUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,8 +19,10 @@ import java.util.List;
  */
 @Service("sysUserService")
 public class SysUserServiceImpl implements SysUserService {
-    @Resource
+    @Autowired
     private SysUserMapper sysUserMapper;
+    @Autowired
+    private SysUserRoleRelationMapper sysUserRoleRelationMapper;
 
     /**
      * 通过ID查询单条数据
@@ -39,6 +45,25 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     public List<SysUser> queryAllByLimit(int offset, int limit) {
         return this.sysUserMapper.queryAllByLimit(offset, limit);
+    }
+
+    /**
+     * 根据RoleId查询所有用户
+     *
+     * @param roleId roleId
+     * @return 角色列表
+     */
+    @Override
+    public List<SysUser> selectUserByRoleId(int roleId) {
+        List<SysUserRoleRelation> roleRelations = sysUserRoleRelationMapper.selectSysUserRoleRelationByRoleId(roleId);
+        List<SysUser> sysUsers = new ArrayList<>();
+        for (SysUserRoleRelation sysUserRoleRelation: roleRelations){
+            SysUser sysUser = sysUserMapper.queryById(sysUserRoleRelation.getUserId());
+            if (sysUser!=null){
+                sysUsers.add(sysUser);
+            }
+        }
+        return sysUsers;
     }
 
     /**

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author 魏荣轩
@@ -48,6 +49,35 @@ public class UserController {
     private final ObjectMapper jsonObjectMapper =  new ObjectMapper();
 
     /**
+     * 获取所有的教师信息
+     *
+     * @param jsonData  json数据
+     * @return          教师列表
+     * @throws JsonProcessingException  转换错误
+     */
+    @PreAuthorize("hasAnyAuthority('view_self')")
+    @RequestMapping(value = "/getAllTeachers",produces = {"text/plain;charset=UTF-8"})
+    @ResponseBody
+    public String getAllTeachers(@RequestBody String jsonData) throws JsonProcessingException {
+        JsonNode node = jsonObjectMapper.readTree(jsonData);
+        String token = node.get("token").asText();
+        String account = TokenUtil.validToken(token);
+        if (SessionStorage.pwdMap.get(account) == null ){
+            //用户不存在
+            JsonResult jsonResult = new JsonResult(false);
+            jsonResult.setErrorCode(ResultCode.USER_ACCOUNT_NOT_EXIST.getCode());
+            jsonResult.setErrorMsg("无效的登入状态!");
+            return jsonObjectMapper.valueToTree(jsonResult).toString();
+        }
+        List<UserInfo> teachers = userInfoService.selectUserInfoByRoleId(RoleCode.TEACHER.getRoleCode());
+        JsonResult jsonResult = new JsonResult(true);
+        jsonResult.setErrorCode(ResultCode.SUCCESS.getCode());
+        jsonResult.setData(teachers);
+        return jsonObjectMapper.valueToTree(jsonResult).toString();
+    }
+
+
+    /**
      * 用户登出
      *
      * @param jsonData  json数据
@@ -65,7 +95,7 @@ public class UserController {
             //用户不存在
             JsonResult jsonResult = new JsonResult(false);
             jsonResult.setErrorCode(ResultCode.USER_ACCOUNT_NOT_EXIST.getCode());
-            jsonResult.setErrorMsg("无效的登入请求!");
+            jsonResult.setErrorMsg("无效的登入状态!");
             return jsonObjectMapper.valueToTree(jsonResult).toString();
         }
         //删除缓存
@@ -74,6 +104,7 @@ public class UserController {
         jsonResult.setErrorCode(ResultCode.SUCCESS.getCode());
         return jsonObjectMapper.valueToTree(jsonResult).toString();
     }
+
 
 
     /**

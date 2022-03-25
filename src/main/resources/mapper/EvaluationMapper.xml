@@ -2,19 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wrx.codeplatform.framework.mapper.EvaluationMapper">
      <resultMap type="com.wrx.codeplatform.domain.framework.sql.code.Evaluation" id="EvaluationMap">
-            <result property="id" column="id" jdbcType="INTEGER"/>
-            <result property="fileId" column="file_id" jdbcType="INTEGER"/>
-            <result property="publisherId" column="publisher_id" jdbcType="INTEGER"/>
-            <result property="context" column="context" jdbcType="VARCHAR"/>
-            <result property="publishedDate" column="published_date" jdbcType="TIMESTAMP"/>
-            <result property="modifyDate" column="modify_date" jdbcType="TIMESTAMP"/>
+         <result property="id" column="id" jdbcType="INTEGER"/>
+         <result property="fileId" column="file_id" jdbcType="INTEGER"/>
+         <result property="publisherId" column="publisher_id" jdbcType="INTEGER"/>
+         <result property="content" column="content" jdbcType="VARCHAR"/>
+         <result property="publishedDate" column="published_date" jdbcType="TIMESTAMP"/>
+         <result property="modifyDate" column="modify_date" jdbcType="TIMESTAMP"/>
+         <result property="score" column="score" jdbcType="DOUBLE"/>
      </resultMap>
     <select id="selectEvaluationById" resultMap="EvaluationMap">
         select * from file_evaluation where id = #{id}
     </select>
 
+    <select id="selectEvaluationByPage" resultMap="EvaluationMap">
+        select * from file_evaluation where file_id=#{fileId} order by published_date desc limit #{start},#{add};
+    </select>
+
     <select id="selectEvaluationByPublisherId" resultMap="EvaluationMap">
         select * from file_evaluation where publisher_id = #{publisherId}
+    </select>
+
+    <select id="selectEvaluationByFileId" resultMap="EvaluationMap">
+        select * from file_evaluation where file_id=#{fileId}
     </select>
 
     <update id="updateEvaluation">
@@ -26,14 +35,17 @@
             <if test="publisherId != null">
                 publisher_id = #{publisherId},
             </if>
-            <if test="context != null and context != ''">
-                context = #{context},
+            <if test="content != null and content != ''">
+                content = #{content},
             </if>
             <if test="publishedDate != null">
                 published_date = #{publishedDate},
             </if>
             <if test="modifyDate != null">
                 modify_date = #{modifyDate},
+            </if>
+            <if test="score != null">
+                score = #{score},
             </if>
         </set>
         where id = #{id}
@@ -43,8 +55,8 @@
         delete from file_evaluation where id = #{id}
     </delete>
 
-    <insert id="insertCode" keyProperty="id" useGeneratedKeys="true">
-        insert into user_code_files (file_id, publisher_id, context, published_date, modify_date)
-        values (#{fileId}, #{publisherId}, #{context}, #{publishedDate}, #{modifyDate})
+    <insert id="insertEvaluation" keyProperty="id" useGeneratedKeys="true">
+        insert into file_evaluation (file_id, publisher_id, content, published_date, modify_date, score)
+        values (#{fileId}, #{publisherId}, #{content}, #{publishedDate}, #{modifyDate}, #{score})
     </insert>
 </mapper>

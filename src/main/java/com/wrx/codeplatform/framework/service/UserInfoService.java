@@ -3,11 +3,22 @@ package com.wrx.codeplatform.framework.service;
 import com.wrx.codeplatform.domain.framework.sql.user.SysUser;
 import com.wrx.codeplatform.domain.framework.sql.user.UserInfo;
 
+import java.util.List;
+
 /**
  * @author 魏荣轩
  * @date 2022/3/1 20:34
  */
 public interface UserInfoService {
+
+    /**
+     * 根据角色ID查询角色信息
+     *
+     * @param roleId   角色Id
+     * @return         角色信息列表
+     */
+    List<UserInfo> selectUserInfoByRoleId(int roleId);
+
     /**
      * 根据用户ID查询用户信息
      *

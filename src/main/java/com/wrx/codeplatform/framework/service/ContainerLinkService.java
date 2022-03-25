@@ -25,6 +25,14 @@ public interface ContainerLinkService {
     int updateContainerLink(ContainerLink containerLink);
 
     /**
+     * 根据容器ID查询关系集合
+     *
+     * @param containerId   容器ID
+     * @return              关系集合
+     */
+    List<ContainerLink> selectContainerLinkByContainerId(int containerId);
+
+    /**
      * 根据ID更新容器信息
      *
      * @param id             id

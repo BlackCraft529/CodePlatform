@@ -3,9 +3,14 @@ package com.wrx.codeplatform.framework.service.impl;
 import com.wrx.codeplatform.domain.framework.sql.user.SysUser;
 import com.wrx.codeplatform.domain.framework.sql.user.UserInfo;
 import com.wrx.codeplatform.framework.mapper.UserInfoMapper;
+import com.wrx.codeplatform.framework.service.SysUserService;
 import com.wrx.codeplatform.framework.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.jws.soap.SOAPBinding;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author 魏荣轩
@@ -16,6 +21,27 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     @Autowired
     private UserInfoMapper userInfoMapper;
+    @Autowired
+    private SysUserService sysUserService;
+
+    /**
+     * 根据角色ID查询角色信息
+     *
+     * @param roleId 角色Id
+     * @return 角色信息列表
+     */
+    @Override
+    public List<UserInfo> selectUserInfoByRoleId(int roleId) {
+        List<SysUser> sysUsers = sysUserService.selectUserByRoleId(roleId);
+        List<UserInfo> userInfos = new ArrayList<>();
+        for (SysUser sysUser: sysUsers){
+            UserInfo userInfo = userInfoMapper.selectByUserId(sysUser.getId());
+            if (userInfo != null){
+                userInfos.add(userInfo);
+            }
+        }
+        return userInfos;
+    }
 
     /**
      * 根据用户ID查询用户信息

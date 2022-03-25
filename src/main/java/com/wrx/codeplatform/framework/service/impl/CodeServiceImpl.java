@@ -1,14 +1,23 @@
 package com.wrx.codeplatform.framework.service.impl;
 
 import com.wrx.codeplatform.domain.framework.sql.code.Code;
+import com.wrx.codeplatform.framework.mapper.CodeMapper;
 import com.wrx.codeplatform.framework.service.CodeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 /**
  * @author 魏荣轩
  * @date 2022/3/1 22:01
  */
+@Service("codeService")
 public class CodeServiceImpl implements CodeService {
+
+    @Autowired
+    public CodeMapper codeMapper;
+
     /**
      * 查询Code信息
      *
@@ -17,7 +26,7 @@ public class CodeServiceImpl implements CodeService {
      */
     @Override
     public Code selectCodeById(int id) {
-        return null;
+        return codeMapper.selectCodeById(id);
     }
 
     /**
@@ -28,8 +37,34 @@ public class CodeServiceImpl implements CodeService {
      */
     @Override
     public List<Code> selectCodesByUserId(int userId) {
-        return null;
+        return codeMapper.selectCodesByUserId(userId);
     }
+
+    /**
+     * 查询最近的代码
+     *
+     * @param userId 用户ID
+     * @param size   查询数量
+     * @return 代码列表
+     */
+    @Override
+    public List<Code> selectRecentCode(int userId, int size) {
+        return codeMapper.selectRecentCode(userId, size);
+    }
+
+    /**
+     * 根据下标获取代码列表
+     *
+     * @param start 开始位置
+     * @param add   偏移量
+     * @param userId 用户ID
+     * @return 代码集
+     */
+    @Override
+    public List<Code> selectCodeByIndex(int start, int add, int userId) {
+        return codeMapper.selectCodesByIndex(start, add, userId);
+    }
+
 
     /**
      * 更新分数
@@ -52,7 +87,9 @@ public class CodeServiceImpl implements CodeService {
      */
     @Override
     public int updateResultById(int id, String result) {
-        return 0;
+        Code code = codeMapper.selectCodeById(id);
+        code.setResult(result);
+        return codeMapper.updateCode(code);
     }
 
     /**
@@ -63,7 +100,7 @@ public class CodeServiceImpl implements CodeService {
      */
     @Override
     public int updateCode(Code code) {
-        return 0;
+        return codeMapper.updateCode(code);
     }
 
     /**

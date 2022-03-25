@@ -10,6 +10,14 @@ import java.util.List;
 public interface EvaluationService {
 
     /**
+     * 插入新的评论
+     *
+     * @param evaluation  实体类
+     * @return            影响条数
+     */
+    int insertNewEvaluation(Evaluation evaluation);
+
+    /**
      * 查询评价
      *
      * @param id   ID
@@ -59,4 +67,21 @@ public interface EvaluationService {
      * @return               影响条数
      */
     int insertEvaluation(int fileId, int publisherId, String context);
+
+    /**
+     * 搜索评论
+     *
+     * @param fileId  文件ID
+     * @param page    页码
+     * @return        评论
+     */
+    List<Evaluation> selectEvaluationByPage(int fileId, int page);
+
+    /**
+     * 搜索评论
+     *
+     * @param fileId  文件ID
+     * @return        评论
+     */
+    List<Evaluation> selectEvaluationByFileId(int fileId);
 }

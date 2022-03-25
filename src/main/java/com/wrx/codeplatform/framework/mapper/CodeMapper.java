@@ -27,6 +27,25 @@ public interface CodeMapper {
     List<Code> selectCodesByUserId(int userId);
 
     /**
+     * 根据下标获取代码列表
+     *
+     * @param start 开始位置
+     * @param add   偏移量
+     * @param userId  用户ID
+     * @return 代码集
+     */
+    List<Code> selectCodesByIndex(int start, int add, int userId);
+
+    /**
+     * 查询最近的代码
+     *
+     * @param size  查询数量
+     * @param userId  用户ID
+     * @return      代码列表
+     */
+    List<Code> selectRecentCode(int userId, int size);
+
+    /**
      * 更新代码集信息
      *
      * @param code    代码

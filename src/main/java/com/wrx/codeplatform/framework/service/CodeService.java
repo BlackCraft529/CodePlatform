@@ -25,6 +25,25 @@ public interface CodeService {
     List<Code> selectCodesByUserId(int userId);
 
     /**
+     * 查询最近的代码
+     *
+     * @param size  查询数量
+     * @param userId  用户ID
+     * @return      代码列表
+     */
+    List<Code> selectRecentCode(int userId, int size);
+
+    /**
+     * 根据下标获取代码列表
+     *
+     * @param start  开始位置
+     * @param add    偏移量
+     * @param userId  用户ID
+     * @return       代码集
+     */
+    List<Code> selectCodeByIndex(int start, int add, int userId);
+
+    /**
      * 更新分数
      *
      * @param id       ID
