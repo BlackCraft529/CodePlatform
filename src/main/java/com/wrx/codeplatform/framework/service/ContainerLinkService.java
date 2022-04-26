@@ -67,4 +67,21 @@ public interface ContainerLinkService {
      * @return              影响条数
      */
     int insertContainerLink(int containerId, int fileId);
+
+    /**
+     * 根据容器ID删除容器关联信息
+     *
+     * @param containerId  容器ID
+     * @return             关联信息
+     */
+    int deleteContainerByContainerId(int containerId);
+
+    /**
+     * 根据容器ID和代码ID删除相关信息
+     *
+     * @param containerId  容器ID
+     * @param codeId       代码ID
+     * @return             影响条数
+     */
+    int deleteContainerLinkByCodeIdAndContainerId(int containerId, int codeId);
 }

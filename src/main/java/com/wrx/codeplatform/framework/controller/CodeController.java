@@ -4,11 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wrx.codeplatform.domain.enums.ResultCode;
+import com.wrx.codeplatform.domain.framework.entity.code.CodeInfo;
 import com.wrx.codeplatform.domain.framework.entity.code.CodeTotalInfo;
 import com.wrx.codeplatform.domain.framework.sql.code.Code;
+import com.wrx.codeplatform.domain.framework.sql.container.ContainerLink;
 import com.wrx.codeplatform.domain.framework.sql.user.SysUser;
 import com.wrx.codeplatform.domain.result.JsonResult;
 import com.wrx.codeplatform.framework.service.CodeService;
+import com.wrx.codeplatform.framework.service.ContainerLinkService;
 import com.wrx.codeplatform.framework.service.SysUserService;
 import com.wrx.codeplatform.utils.common.TokenUtil;
 import com.wrx.codeplatform.utils.data.SessionStorage;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,6 +36,8 @@ public class CodeController {
     private SysUserService sysUserService;
     @Autowired
     private CodeService codeService;
+    @Autowired
+    private ContainerLinkService containerLinkService;
 
     /**
      * json工具对象
@@ -155,6 +161,43 @@ public class CodeController {
         JsonResult jsonResult = new JsonResult(true);
         jsonResult.setErrorCode(ResultCode.SUCCESS.getCode());
         jsonResult.setData(codeTotalInfo);
+        return jsonObjectMapper.valueToTree(jsonResult).toString();
+    }
+
+    /**
+     * 查看班级所有作业
+     *
+     * @param jsonData   json数据
+     * @return           统计信息
+     * @throws JsonProcessingException   json转换错误
+     */
+    @PreAuthorize("hasAnyAuthority('view_self')")
+    @RequestMapping(value = "/getCodesByContainer",produces = {"text/plain;charset=UTF-8"})
+    @ResponseBody
+    public String getCodesByContainer(@RequestBody String jsonData) throws JsonProcessingException {
+        JsonNode node = jsonObjectMapper.readTree(jsonData);
+        String token = node.get("token").asText();
+        String account = TokenUtil.validToken(token);
+        if (SessionStorage.pwdMap.get(account) == null) {
+            //用户不存在
+            JsonResult jsonResult = new JsonResult(false);
+            jsonResult.setErrorCode(ResultCode.USER_ACCOUNT_NOT_EXIST.getCode());
+            jsonResult.setErrorMsg("无效的登入状态!");
+            return jsonObjectMapper.valueToTree(jsonResult).toString();
+        }
+        int containerId = node.get("containerId").asInt();
+        List<ContainerLink> containerLinkList = containerLinkService.selectContainerLinkByContainerId(containerId);
+        List<CodeInfo> codeList = new ArrayList<>();
+        for (ContainerLink containerLink: containerLinkList){
+            Code code = codeService.selectCodeById(containerLink.getFileId());
+            if (code == null){
+                continue;
+            }
+            codeList.add(new CodeInfo(code));
+        }
+        JsonResult jsonResult = new JsonResult(true);
+        jsonResult.setErrorCode(ResultCode.SUCCESS.getCode());
+        jsonResult.setData(codeList);
         return jsonObjectMapper.valueToTree(jsonResult).toString();
     }
 

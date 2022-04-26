@@ -14,5 +14,13 @@ public class Container {
     private String name;
     private String description;
     private Date createDate;
+    public Container(){}
+
+    public Container(int creator, String name, String description){
+        this.creator = creator;
+        this.name = name;
+        this.description = description;
+        this.createDate = new Date();
+    }
 
 }

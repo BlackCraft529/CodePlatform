@@ -105,7 +105,31 @@ public class UserController {
         return jsonObjectMapper.valueToTree(jsonResult).toString();
     }
 
-
+    /**
+     * 前往教务中心
+     *
+     * @param jsonData  json数据
+     * @return          结果
+     * @throws JsonProcessingException   转换错误
+     */
+    @PreAuthorize("hasAnyAuthority('con_create')")
+    @RequestMapping(value = "/toManagerCenter",produces = {"text/plain;charset=UTF-8"})
+    @ResponseBody
+    public String toManagerCenter(@RequestBody String jsonData) throws JsonProcessingException {
+        JsonNode node = jsonObjectMapper.readTree(jsonData);
+        String token = node.get("token").asText();
+        String account = TokenUtil.validToken(token);
+        if (SessionStorage.pwdMap.get(account) == null ){
+            //用户不存在
+            JsonResult jsonResult = new JsonResult(false);
+            jsonResult.setErrorCode(ResultCode.USER_ACCOUNT_NOT_EXIST.getCode());
+            jsonResult.setErrorMsg("无效的登入状态!");
+            return jsonObjectMapper.valueToTree(jsonResult).toString();
+        }
+        JsonResult jsonResult = new JsonResult(true);
+        jsonResult.setErrorCode(ResultCode.SUCCESS.getCode());
+        return jsonObjectMapper.valueToTree(jsonResult).toString();
+    }
 
     /**
      * 获取用户信息
@@ -244,7 +268,6 @@ public class UserController {
             verifyStatusService.deleteVerifyStatusByPhone(phone);
         }
         String result = CodeUtil.sendVerifyCode(phone);
-        System.out.println("超级牛逼:"+result);
         if (result.split(":")[0].equalsIgnoreCase("true")){
             //发送验证码成功 - 返回前端数据
             verifyStatus = new VerifyStatus(account, phone, result.split(":")[1]);

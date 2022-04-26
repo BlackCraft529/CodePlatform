@@ -50,4 +50,38 @@ public interface ContainerMapper {
      * @return            影响条数
      */
     int insertContainer(Container container);
+
+    /**
+     * 根据页码查询班级信息
+     *
+     * @param start  开始
+     * @param add    偏移
+     * @return       代码
+     */
+    List<Container> selectContainerByPages(int start, int add);
+
+    /**
+     * 根据页码查询班级信息
+     *
+     * @param start  开始
+     * @param add    偏移
+     * @param creator 创建者
+     * @return       代码
+     */
+    List<Container> selectContainersByPageAndCreator(int start, int add, int creator);
+
+    /**
+     * 获取班级总数
+     *
+     * @return 总数
+     */
+    int getTotalContainers();
+
+    /**
+     * 查询创建者的所有容器数量
+     *
+     * @param creator  创建者ID
+     * @return         数量
+     */
+    int getTotalContainersByCreator(int creator);
 }

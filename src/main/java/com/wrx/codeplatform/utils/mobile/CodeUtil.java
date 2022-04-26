@@ -39,7 +39,6 @@ public class CodeUtil {
     public static String sendVerifyCode(String phone){
         try {
             String result = sendMsg(phone);
-            System.out.println("吊毛："+result);
             if (result.split(":")[0].equals("success")) {
                 //发送成功
                 return "true:"+result.split(":")[1];

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wrx.codeplatform.framework.mapper.CodeIssuesMapper">
+
+    <resultMap type="com.wrx.codeplatform.domain.framework.sql.code.CodeIssues" id="CodeIssuesMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="fileId" column="file_id" jdbcType="INTEGER"/>
+        <result property="proposer" column="proposer" jdbcType="INTEGER"/>
+        <result property="open" column="open" jdbcType="BOOLEAN"/>
+        <result property="solver" column="solver" jdbcType="INTEGER"/>
+        <result property="openDate" column="open_date" jdbcType="TIMESTAMP"/>
+        <result property="closeDate" column="close_date" jdbcType="TIMESTAMP"/>
+        <result property="replay" column="replay" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="selectCodeIssuesById" resultMap="CodeIssuesMap">
+        select * from code_issues where id=#{id}
+    </select>
+
+    <select id="selectCodeIssuesByFileId" resultMap="CodeIssuesMap">
+        select * from code_issues where file_id=#{fileId}
+    </select>
+    <update id="updateCodeIssues">
+        update code_issues
+        <set>
+            <if test="fileId != null">
+                file_id = #{fileId},
+            </if>
+            <if test="proposer != null">
+                proposer = #{proposer},
+            </if>
+            <if test="open != null">
+                `open` = #{open},
+            </if>
+            <if test="solver != null">
+                solver = #{solver},
+            </if>
+            <if test="openDate != null">
+                `open_date` = #{openDate},
+            </if>
+            <if test="closeDate != null">
+                `close_date` = #{closeDate},
+            </if>
+            <if test="description != null and description != ''">
+                `description` = #{description},
+            </if>
+            <if test="replay != null and replay != ''">
+                `replay` = #{replay},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCodeIssuesById">
+        delete from code_issues where id=#{id}
+    </delete>
+
+    <insert id="insertNewCodeIssues" keyProperty="id" useGeneratedKeys="true">
+        insert into code_issues (file_id, proposer, description, open, solver, open_date, close_date, replay)
+        values (#{fileId},#{proposer},#{description},#{open},#{solver},#{openDate},#{closeDate},#{replay})
+    </insert>
+
+    <select id="selectCodeIssuesByPage" resultMap="CodeIssuesMap">
+        select * from code_issues where file_id=#{fileId} order by open_date desc limit #{start},#{add};
+    </select>
+</mapper>

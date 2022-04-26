@@ -59,4 +59,12 @@ public interface ContainerLinkMapper {
      */
     int insertContainerLink(ContainerLink containerLink);
 
+    /**
+     * 根据容器ID和代码ID获取容器关联信息
+     *
+     * @param containerId 容器ID
+     * @param codeId      代码ID
+     * @return            关联实体
+     */
+    List<ContainerLink> selectContainerLinkByCodeIdAndContainerId(int containerId, int codeId);
 }

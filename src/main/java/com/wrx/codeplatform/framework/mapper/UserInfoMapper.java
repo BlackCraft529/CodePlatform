@@ -3,6 +3,8 @@ package com.wrx.codeplatform.framework.mapper;
 import com.wrx.codeplatform.domain.framework.sql.user.UserInfo;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @author 魏荣轩
  * @date 2022/2/9 21:38
@@ -41,5 +43,6 @@ public interface UserInfoMapper {
      * @return        影响条数
      */
     int deleteUserInfo(int userId);
+
 
 }

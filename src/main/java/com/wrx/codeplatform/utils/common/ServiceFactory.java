@@ -2,10 +2,7 @@ package com.wrx.codeplatform.utils.common;
 
 import com.wrx.codeplatform.framework.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.PostConstruct;
 
 /**
@@ -24,12 +21,15 @@ public class ServiceFactory {
     private CodeService codeServiceAuto;
     @Autowired
     private ContainerLinkService containerLinkServiceAuto;
+    @Autowired
+    private ContainerService containerServiceAuto;
 
     public static SysUserService sysUserService;
     public static SysPermissionService sysPermissionService;
     public static UserInfoService userInfoService;
     public static CodeService codeService;
     public static ContainerLinkService containerLinkService;
+    public static ContainerService containerService;
 
     @PostConstruct
     public void init() {
@@ -38,8 +38,10 @@ public class ServiceFactory {
         this.setUserInfoService();
         this.setCodeService();
         this.setContainerLinkService();
+        this.setContainerService();
     }
 
+    public void setContainerService(){ServiceFactory.containerService = containerServiceAuto;}
     public void setContainerLinkService(){ServiceFactory.containerLinkService = containerLinkServiceAuto;}
     public void setCodeService(){
         ServiceFactory.codeService = codeServiceAuto;

@@ -6,7 +6,8 @@ package com.wrx.codeplatform.domain.enums;
  */
 public enum Common {
 
-    EVERY_PAGE_EVALUATIONS(10);
+    EVERY_PAGE_EVALUATIONS(10),
+    EVERY_PAGE_CONTAINER(10);
 
     private int par;
     Common(int par){

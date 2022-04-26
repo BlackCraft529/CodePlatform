@@ -85,4 +85,36 @@ public interface ContainerService {
      */
     int insertContainer(String name, int creator, String description);
 
+    /**
+     * 根据页码查询班级信息
+     *
+     * @param page    页码
+     * @return       代码
+     */
+    List<Container> selectContainerByPages(int page);
+
+    /**
+     * 获取班级总数
+     *
+     * @return 总数
+     */
+    int getTotalContainers();
+
+    /**
+     * 查询创建者的所有容器数量
+     *
+     * @param creator  创建者ID
+     * @return         数量
+     */
+    int getTotalContainersByCreator(int creator);
+
+    /**
+     * 根据页码查询班级信息
+     *
+     * @param page   页码
+     * @param creator 创建者
+     * @return       代码
+     */
+    List<Container> selectContainersByPageAndCreator(int page, int creator);
+
 }

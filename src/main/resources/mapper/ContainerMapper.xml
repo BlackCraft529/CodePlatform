@@ -10,8 +10,24 @@
         <result property="createDate" column="create_date" jdbcType="TIMESTAMP"/>
     </resultMap>
 
+    <select id="getTotalContainersByCreator" resultType="java.lang.Integer">
+        select count(*) from file_container where creator=#{creator}
+    </select>
+
     <select id="selectContainerById" resultMap="ContainerMap">
         select * from file_container where id=#{id}
+    </select>
+
+    <select id="getTotalContainers" resultType="java.lang.Integer">
+        select count(*) from file_container
+    </select>
+
+    <select id="selectContainerByPages" resultMap="ContainerMap">
+        select * from file_container order by create_date desc limit #{start},#{add}
+    </select>
+
+    <select id="selectContainersByPageAndCreator" resultMap="ContainerMap">
+        select * from file_container where creator=#{creator} order by create_date desc limit #{start},#{add}
     </select>
 
     <select id="selectContainerByCreator" resultMap="ContainerMap">

@@ -1,5 +1,6 @@
 package com.wrx.codeplatform.framework.service.impl;
 
+import com.wrx.codeplatform.domain.enums.Common;
 import com.wrx.codeplatform.domain.framework.sql.code.Code;
 import com.wrx.codeplatform.domain.framework.sql.container.Container;
 import com.wrx.codeplatform.domain.framework.sql.container.ContainerLink;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -125,7 +127,7 @@ public class ContainerServiceImpl implements ContainerService {
      */
     @Override
     public int deleteContainer(int id) {
-        return 0;
+        return containerMapper.deleteContainerById(id);
     }
 
     /**
@@ -136,7 +138,7 @@ public class ContainerServiceImpl implements ContainerService {
      */
     @Override
     public int updateContainer(Container container) {
-        return 0;
+        return containerMapper.updateContainer(container);
     }
 
     /**
@@ -149,6 +151,58 @@ public class ContainerServiceImpl implements ContainerService {
      */
     @Override
     public int insertContainer(String name, int creator, String description) {
-        return 0;
+        Container container = new Container();
+        container.setCreateDate(new Date());
+        container.setDescription(description);
+        container.setCreator(creator);
+        container.setName(name);
+        return containerMapper.insertContainer(container);
     }
+
+    /**
+     * 根据页码查询班级信息
+     *
+     * @param page 页码
+     * @return 代码
+     */
+    @Override
+    public List<Container> selectContainerByPages(int page) {
+        int start = (page-1) * Common.EVERY_PAGE_EVALUATIONS.getPar();
+        return containerMapper.selectContainerByPages(start, Common.EVERY_PAGE_CONTAINER.getPar());
+    }
+
+    /**
+     * 获取班级总数
+     *
+     * @return 总数
+     */
+    @Override
+    public int getTotalContainers() {
+        return containerMapper.getTotalContainers();
+    }
+
+    /**
+     * 查询创建者的所有容器数量
+     *
+     * @param creator 创建者ID
+     * @return 数量
+     */
+    @Override
+    public int getTotalContainersByCreator(int creator) {
+        return containerMapper.getTotalContainersByCreator(creator);
+    }
+
+    /**
+     * 根据页码查询班级信息
+     *
+     * @param page   页码
+     * @param creator 创建者
+     * @return       代码
+     */
+    public List<Container> selectContainersByPageAndCreator(int page, int creator) {
+        int start = (page-1) * Common.EVERY_PAGE_EVALUATIONS.getPar();
+        return containerMapper.selectContainersByPageAndCreator(start, Common.EVERY_PAGE_CONTAINER.getPar(), creator);
+    }
+
+
 }

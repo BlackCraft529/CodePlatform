@@ -82,7 +82,7 @@ public class ContainerLinkServiceImpl implements ContainerLinkService {
      */
     @Override
     public int deleteContainerLinkById(int id) {
-        return 0;
+        return containerLinkMapper.deleteContainerLink(id);
     }
 
     /**
@@ -94,7 +94,44 @@ public class ContainerLinkServiceImpl implements ContainerLinkService {
      */
     @Override
     public int insertContainerLink(int containerId, int fileId) {
-        return 0;
+        ContainerLink containerLink = new ContainerLink();
+        containerLink.setContainerId(containerId);
+        containerLink.setFileId(fileId);
+        return containerLinkMapper.insertContainerLink(containerLink);
     }
+
+    /**
+     * 根据容器ID删除容器关联信息
+     *
+     * @param containerId 容器ID
+     * @return 关联信息
+     */
+    @Override
+    public int deleteContainerByContainerId(int containerId) {
+        List<ContainerLink> containerLinkList = containerLinkMapper.selectContainerLinkByContainerId(containerId);
+        int count=0;
+        for (ContainerLink containerLink: containerLinkList){
+            count+=containerLinkMapper.deleteContainerLink(containerLink.getId());
+        }
+        return count;
+    }
+
+    /**
+     * 根据容器ID和代码ID删除相关信息
+     *
+     * @param containerId 容器ID
+     * @param codeId      代码ID
+     * @return 影响条数
+     */
+    @Override
+    public int deleteContainerLinkByCodeIdAndContainerId(int containerId, int codeId) {
+        int delCount = 0;
+        List<ContainerLink> containerLinkList = containerLinkMapper.selectContainerLinkByCodeIdAndContainerId(containerId,codeId);
+        for (ContainerLink containerLink: containerLinkList){
+            delCount+=containerLinkMapper.deleteContainerLink(containerLink.getId());
+        }
+        return delCount;
+    }
+
 
 }
