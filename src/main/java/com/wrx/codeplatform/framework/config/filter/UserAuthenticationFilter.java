@@ -2,6 +2,7 @@ package com.wrx.codeplatform.framework.config.filter;
 
 import com.wrx.codeplatform.domain.framework.sql.permission.SysPermission;
 import com.wrx.codeplatform.domain.framework.sql.user.SysUser;
+import com.wrx.codeplatform.framework.config.common.PwdEncoder;
 import com.wrx.codeplatform.framework.service.SysPermissionService;
 import com.wrx.codeplatform.framework.service.SysUserService;
 import com.wrx.codeplatform.utils.data.SessionStorage;
@@ -48,16 +49,19 @@ public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilt
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         String token = request.getHeader("token");
-//        String token1 = request.getParameter("token");
+        //String token1 = request.getParameter("token");
         System.out.println("Token: "+token);
-//        System.out.println("Token1: "+token1);
+        String passWord = request.getParameter("password");
+        //System.out.println("Token1: "+token1);
         if (token != null && !token.equals("")){
             try {
                 String account = TokenUtil.validToken(token);
                 System.out.println("Account: "+account);
                 SysUser sysUser = sysUserService.selectByAccount(account);
-                if (sysUser == null) {
-                    throw new RuntimeException("用户不存在");
+                if (sysUser == null || !sysUser.getPassword().
+                        equalsIgnoreCase(PwdEncoder.getPasswordEncoder().encode(passWord))) {
+                    SessionStorage.pwdMap.remove(account);
+                    throw new RuntimeException("用户不存在/密码错误!");
                 }
                 //获取该用户所拥有的权限
                 List<SysPermission> sysPermissions = sysPermissionService.selectListByUser(sysUser.getId());

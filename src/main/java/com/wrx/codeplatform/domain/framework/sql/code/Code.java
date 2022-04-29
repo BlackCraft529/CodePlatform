@@ -18,5 +18,4 @@ public class Code {
     private Date lastCheckDate;
     private Date uploadDate;
     private String result;
-
 }

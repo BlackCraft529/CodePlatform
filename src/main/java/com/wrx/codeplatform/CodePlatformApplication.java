@@ -8,8 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * TODO:
- *  1.代码列表界面的隐藏
- *  2.代码界面的响应式：使用表格布局
+ *  BUG: 登录状态下密码错误仍然可以登录的问题
  *
  */
 @MapperScan("com.wrx.codeplatform.framework.mapper")

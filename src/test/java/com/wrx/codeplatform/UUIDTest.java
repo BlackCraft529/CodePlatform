@@ -17,7 +17,6 @@ public class UUIDTest {
     }
     @Test
     public void getEncodePwd(){
-        //$2a$10$xDKzqcTrkAdhn0agWnCulugDU.X9Oa611FYnJ/cOS/F6Hx2l3BnIu
         System.out.println(new BCryptPasswordEncoder().encode("1515206"));
     }
 }

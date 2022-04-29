@@ -25,4 +25,13 @@ public interface TransformersModel {
      * @return       百分比结果
      */
     String getCleanResult(String args1, String args2);
+
+    /**
+     * 最长子串相似度
+     *
+     * @param code1 代码1
+     * @param code2 代码2
+     * @return      结果
+     */
+    String getStringCompareResult(String code1, String code2);
 }

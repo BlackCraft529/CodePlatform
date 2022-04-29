@@ -1,6 +1,7 @@
 package com.wrx.codeplatform.utils.code.impl;
 
 import com.wrx.codeplatform.utils.code.TransformersModel;
+import com.wrx.codeplatform.utils.code.string.CodesCompare;
 import com.wrx.codeplatform.utils.code.util.DelComments;
 import com.wrx.codeplatform.utils.code.util.InputStreamRunnable;
 import org.springframework.core.io.ClassPathResource;
@@ -29,6 +30,7 @@ public class SentenceTransformersModel implements TransformersModel {
      * @param args1  代码片段1
      * @param args2  代码片段2
      * @return       百分比结果
+     * 空格问题、代码类型问题
      */
     @Override
     public String getCleanResult(String args1, String args2){
@@ -42,6 +44,18 @@ public class SentenceTransformersModel implements TransformersModel {
         System.out.println("getCleanResult："+resultList.get(resultList.size()-1));
         //返回百分比
         return resultList.get(resultList.size()-1);
+    }
+
+    /**
+     * 最长子串相似度
+     *
+     * @param code1 代码1
+     * @param code2 代码2
+     * @return 结果
+     */
+    @Override
+    public String getStringCompareResult(String code1, String code2) {
+        return new CodesCompare().getSimilarity(code1, code2)+"";
     }
 
     /**

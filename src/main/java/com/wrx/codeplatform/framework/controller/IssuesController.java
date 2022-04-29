@@ -99,7 +99,6 @@ public class IssuesController {
         jsonResult.setErrorCode(ResultCode.SUCCESS.getCode());
         jsonResult.setData(codeIssuesInfos);
         return jsonObjectMapper.valueToTree(jsonResult).toString();
-
     }
 
     /**
