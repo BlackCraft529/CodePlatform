@@ -1,5 +1,6 @@
 package com.wrx.codeplatform;
 
+import com.wrx.codeplatform.framework.config.common.PwdEncoder;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -17,6 +18,6 @@ public class UUIDTest {
     }
     @Test
     public void getEncodePwd(){
-        System.out.println(new BCryptPasswordEncoder().encode("1515206"));
+        System.out.println(PwdEncoder.getPasswordEncoder().encode("123456"));
     }
 }

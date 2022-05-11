@@ -32,55 +32,68 @@ public class CodeUtilTest {
     }
 
     /**
-     * TODO: 增加 0.x相似度代码的训练集，减少短代码训练，增加 变量修改、循环变种、变量名修改的训练集。
+     * 分类：
+     *      1.仅替换变量名： 5.0
+     *      2.增加/删除无关语句： 4.5
+     *      3.变更循环结构： 3.5
+     *      4.算法不同： 0.0
+     *
+     * TODO：
+     *      增加子函数代码段
      */
     @Test
     public void getCode(){
         String codes[] = new String[]{
-                        "int main()\n" +
-                                "{\n" +
-                                "    int iChicken, jChicken, kChicken;\n" +
-                                "\n" +
-                                "    for( iChicken=0; iChicken <= 100; iChicken++ )\n" +
-                                "        for( jChicken=0; jChicken <= 100; jChicken++ )\n" +
-                                "            for( kChicken=0; kChicken <= 100; kChicken++ )\n" +
-                                "            {\n" +
-                                "                if( 5*iChicken+3*jChicken+kChicken/3==100 && kChicken%3==0 && iChicken+jChicken+kChicken==100 )\n" +
-                                "                {\n" +
-                                "                    printf(\"1. %2d s，2. %2d s，3. %2d s\\n\", iChicken, jChicken, kChicken);\n" +
-                                "                }\n" +
-                                "            }\n" +
-                                "\n" +
+                        "#include <stdio.h>\n" +
+                                " \n" +
+                                "void output(long int b, long int i){\n" +
+                                "    printf(\"\\n%ld = 800 * %ld + 9 * %ld\\n\", b,i,i);\n" +
+                                "}\n" +
+                                " \n" +
+                                " \n" +
+                                "int main(){\n" +
+                                " \n" +
+                                "    void output(long int b, long int i);\n" +
+                                "    long int a,b,i;\n" +
+                                "    a = 809;\n" +
+                                "    for(i = 10; i < 100; i++){\n" +
+                                "        b = i * a;\n" +
+                                "        if (b >= 1000 && b <= 10000 && 8 * i < 100 && 9 * i >= 100){\n" +
+                                "            output(b, i);\n" +
+                                "        }\n" +
+                                "    }\n" +
                                 "    return 0;\n" +
                                 "}",
-                "int main()\n" +
-                        "{\n" +
-                        "    int i, j, k;\n" +
+                "#include <stdio.h>\n" +
                         "\n" +
-                        "    printf(\"result：\\n\");\n" +
+                        "void shuchuhanshu(long int b, long int i){\n" +
+                        "    printf(\"\\n%ld = 800 * %ld + 9 * %ld\\n\", b,i,i);\n" +
+                        "}\n" +
                         "\n" +
-                        "    for( i=0; i <= 100; i++ )\n" +
-                        "        for( j=0; j <= 100; j++ )\n" +
-                        "            for( k=0; k <= 100; k++ )\n" +
-                        "            {\n" +
-                        "                if( 5*i+3*j+k/3==100 && k%3==0 && i+j+k==100 )\n" +
-                        "                {\n" +
-                        "                    printf(\"gongji %2d s，muji %2d s，xiaoji %2d s\\n\", i, j, k);\n" +
-                        "                }\n" +
-                        "            }\n" +
                         "\n" +
+                        "int main(){\n" +
+                        "\n" +
+                        "    void shuchuhanshu(long int b, long int i);\n" +
+                        "    long int a,b,i;\n" +
+                        "    a = 809;\n" +
+                        "    for(i = 10; i < 100; i++){\n" +
+                        "        b = i * a;\n" +
+                        "        if (b >= 1000 && b <= 10000 && 8 * i < 100 && 9 * i >= 100){\n" +
+                        "            output(b, i);\n" +
+                        "        }\n" +
+                        "    }\n" +
                         "    return 0;\n" +
                         "}",};
         List<String> codesList = new ArrayList<>();
+        String REGEX_CHINESE = "[\u4e00-\u9fa5]";
         for (String code : codes) {
             String args = code;
             args = DelComments.delComments(args);
-            args = args.replaceAll("\n", "").replaceAll(" ", "").replaceAll("\t", "");
+            args = args.replaceAll("\n","").replaceAll(" +"," ").replaceAll("\t","").replaceAll(REGEX_CHINESE, "");
             codesList.add(args);
         }
-        for (String s: codesList){
-            System.out.println("    "+s);
-        }
+        System.out.println(codesList.get(0)+"\t"+codesList.get(1));
+
     }
 
     @Test

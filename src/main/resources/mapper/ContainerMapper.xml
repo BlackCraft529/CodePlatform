@@ -14,6 +14,10 @@
         select count(*) from file_container where creator=#{creator}
     </select>
 
+    <select id="selectContainerByCreatorDescByDate" resultMap="ContainerMap">
+        select * from file_container where creator = #{creator} order by create_date desc limit 1;
+    </select>
+
     <select id="selectContainerById" resultMap="ContainerMap">
         select * from file_container where id=#{id}
     </select>

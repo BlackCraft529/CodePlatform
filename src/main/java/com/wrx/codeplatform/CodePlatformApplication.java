@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * TODO:
- *  BUG: 登录状态下密码错误仍然可以登录的问题
+ *  教师问询   &   同学提问的区别
  *
  */
 @MapperScan("com.wrx.codeplatform.framework.mapper")

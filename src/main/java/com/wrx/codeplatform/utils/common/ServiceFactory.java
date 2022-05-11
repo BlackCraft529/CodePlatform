@@ -23,6 +23,10 @@ public class ServiceFactory {
     private ContainerLinkService containerLinkServiceAuto;
     @Autowired
     private ContainerService containerServiceAuto;
+    @Autowired
+    private SysUserRoleRelationService sysUserRoleRelationServiceAuto;
+    @Autowired
+    private VerifyStatusService verifyStatusServiceAuto;
 
     public static SysUserService sysUserService;
     public static SysPermissionService sysPermissionService;
@@ -30,6 +34,8 @@ public class ServiceFactory {
     public static CodeService codeService;
     public static ContainerLinkService containerLinkService;
     public static ContainerService containerService;
+    public static SysUserRoleRelationService sysUserRoleRelationService;
+    public static VerifyStatusService verifyStatusService;
 
     @PostConstruct
     public void init() {
@@ -39,8 +45,12 @@ public class ServiceFactory {
         this.setCodeService();
         this.setContainerLinkService();
         this.setContainerService();
+        this.setSysUserRoleRelationService();
+        this.setVerifyStatusService();
     }
 
+    public void setVerifyStatusService(){ServiceFactory.verifyStatusService = verifyStatusServiceAuto;}
+    public void setSysUserRoleRelationService(){ServiceFactory.sysUserRoleRelationService = sysUserRoleRelationServiceAuto;}
     public void setContainerService(){ServiceFactory.containerService = containerServiceAuto;}
     public void setContainerLinkService(){ServiceFactory.containerLinkService = containerLinkServiceAuto;}
     public void setCodeService(){

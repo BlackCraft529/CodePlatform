@@ -90,13 +90,15 @@ public class ContainerLinkServiceImpl implements ContainerLinkService {
      *
      * @param containerId 容器ID
      * @param fileId      文件ID
+     * @param userId      用户ID
      * @return 影响条数
      */
     @Override
-    public int insertContainerLink(int containerId, int fileId) {
+    public int insertContainerLink(int containerId, int fileId, int userId) {
         ContainerLink containerLink = new ContainerLink();
         containerLink.setContainerId(containerId);
         containerLink.setFileId(fileId);
+        containerLink.setUserId(userId);
         return containerLinkMapper.insertContainerLink(containerLink);
     }
 
@@ -131,6 +133,17 @@ public class ContainerLinkServiceImpl implements ContainerLinkService {
             delCount+=containerLinkMapper.deleteContainerLink(containerLink.getId());
         }
         return delCount;
+    }
+
+    /**
+     * 根据文件ID查询关联信息
+     *
+     * @param fileId 文件id
+     * @return 集合
+     */
+    @Override
+    public List<ContainerLink> selectContainerLinkByFileId(int fileId) {
+        return containerLinkMapper.selectContainerLinkByFileId(fileId);
     }
 
 

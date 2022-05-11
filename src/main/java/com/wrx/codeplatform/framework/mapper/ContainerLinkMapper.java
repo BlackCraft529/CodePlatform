@@ -67,4 +67,13 @@ public interface ContainerLinkMapper {
      * @return            关联实体
      */
     List<ContainerLink> selectContainerLinkByCodeIdAndContainerId(int containerId, int codeId);
+
+    /**
+     * 根据用户查询班级关联信息
+     *
+     * @param userId  用户ID
+     * @return        结合
+     */
+    List<ContainerLink> selectContainerLinkByUserId(int userId);
+
 }

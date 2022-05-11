@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wrx.codeplatform.framework.mapper.AllowedPhoneMapper">
+
+    <resultMap type="com.wrx.codeplatform.domain.framework.sql.phone.AllowedPhone" id="AllowedPhoneMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectPhoneById" resultMap="AllowedPhoneMap">
+        select * from allowed_phone where id=#{id};
+    </select>
+
+    <select id="selectPhoneByPhone" resultMap="AllowedPhoneMap">
+        select * from allowed_phone where phone=#{phone};
+    </select>
+
+</mapper>

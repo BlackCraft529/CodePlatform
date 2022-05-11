@@ -1,6 +1,7 @@
 package com.wrx.codeplatform.framework.service.impl;
 
 import com.wrx.codeplatform.domain.enums.Common;
+import com.wrx.codeplatform.domain.enums.RoleCode;
 import com.wrx.codeplatform.domain.framework.sql.code.CodeIssues;
 import com.wrx.codeplatform.framework.mapper.CodeIssuesMapper;
 import com.wrx.codeplatform.framework.service.CodeIssuesService;
@@ -99,5 +100,40 @@ public class CodeIssuesServiceImpl implements CodeIssuesService {
     public List<CodeIssues> selectCodeIssuesByPage(int fileId, int page) {
         int start = (page-1) * Common.EVERY_PAGE_EVALUATIONS.getPar();
         return codeIssuesMapper.selectCodeIssuesByPage(fileId, start, Common.EVERY_PAGE_EVALUATIONS.getPar());
+    }
+
+
+    /**
+     * 查询学生提出的代码问题
+     *
+     * @param codeId  代码ID
+     * @return        条数
+     */
+    @Override
+    public int selectCodeIssuesByFileIdStu(int codeId){
+        return codeIssuesMapper.totalCodeIssuesByFileIdAndRoleId(codeId, RoleCode.STUDENT.getRoleCode());
+    }
+
+    /**
+     * 查询老师提出的代码问题
+     *
+     * @param codeId  代码ID
+     * @return        条数
+     */
+    public int selectCodeIssuesByFileIdTea(int codeId){
+        return codeIssuesMapper.totalCodeIssuesByFileIdAndRoleId(codeId, RoleCode.TEACHER.getRoleCode());
+    }
+
+    /**
+     * 查询指定角色提出的所有问题信息
+     *
+     * @param codeId 代码ID
+     * @param roleId 角色ID
+     * @return 集合
+     */
+    @Override
+    public List<CodeIssues> selectAllCodeIssuesByFileIdAndRoleId(int codeId, int roleId, int page) {
+        int start = (page-1) * Common.EVERY_PAGE_EVALUATIONS.getPar();
+        return codeIssuesMapper.selectCodeIssuesByFileIdAndRoleId(codeId, roleId, start, Common.EVERY_PAGE_EVALUATIONS.getPar());
     }
 }

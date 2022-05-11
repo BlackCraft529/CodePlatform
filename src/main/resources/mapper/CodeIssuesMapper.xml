@@ -63,4 +63,12 @@
     <select id="selectCodeIssuesByPage" resultMap="CodeIssuesMap">
         select * from code_issues where file_id=#{fileId} order by open_date desc limit #{start},#{add};
     </select>
+
+    <select id="selectCodeIssuesByFileIdAndRoleId" resultMap="CodeIssuesMap">
+        select * from code_issues where file_id=#{fileId} and `proposer` in (select user_id from sys_user_role_relation where role_id=#{roleId}) order by open_date desc limit #{start},#{add}
+    </select>
+
+    <select id="totalCodeIssuesByFileIdAndRoleId" resultType="java.lang.Integer">
+        select count(*) from code_issues where file_id=#{fileId} and `proposer` in (select user_id from sys_user_role_relation where role_id=#{roleId})
+    </select>
 </mapper>

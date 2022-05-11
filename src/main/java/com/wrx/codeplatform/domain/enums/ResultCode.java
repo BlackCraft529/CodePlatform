@@ -47,7 +47,8 @@ public enum ResultCode {
     CODE_NOT_EXISTS(3011,"代码文件不存在"),
     RECHECKING_RESULT_NOT_EXISTS(3012,"代码查重结果为空"),
     ISSUES_IS_NOT_OPEN(3013,"问题已经被关闭,回复失败!"),
-    ISSUES_IS_NOT_EXISTS(3014, "问题不存在,请尝试刷新界面!");
+    ISSUES_IS_NOT_EXISTS(3014, "问题不存在,请尝试刷新界面!"),
+    ROLE_OPEN_ISSUES_IS_FAIL(3015,"您当前无法在%role%版块发布问题/意见!");
 
     private Integer code;
     private String message;

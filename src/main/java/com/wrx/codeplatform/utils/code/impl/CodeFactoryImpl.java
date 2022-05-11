@@ -14,6 +14,8 @@ import com.wrx.codeplatform.utils.file.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -84,10 +86,21 @@ public class CodeFactoryImpl implements CodeFactory {
                 perMap.put(code.getId(), result);
                 continue;
             }
-            //带入模型获取结果
-            String cleanResult = transformersModel.getCleanResult(targetCodeContent, content);
+            String cleanResult = "";
+            //分类别模式带入查重
+            if (model.equalsIgnoreCase("ai")){
+                //带入模型获取结果 - Sentence-BERT
+                cleanResult = transformersModel.getCleanResult(targetCodeContent, content);
+            }else if (model.equalsIgnoreCase("str")){
+                //带入模型获取结果 - 子串
+                cleanResult = transformersModel.getStringCompareResult(targetCodeContent, content);
+            }else {
+                cleanResult = transformersModel.getWeightedResult(targetCodeContent, content);
+            }
             try{
                 result = Double.parseDouble(cleanResult);
+                BigDecimal setter = new BigDecimal(result);
+                result =  setter.setScale(2, RoundingMode.HALF_UP).doubleValue();
                 perMap.put(code.getId(), result);
             }catch (Exception exception){
                 result = -1.0;

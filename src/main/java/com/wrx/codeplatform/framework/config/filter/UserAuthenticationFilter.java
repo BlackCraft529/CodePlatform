@@ -49,17 +49,12 @@ public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilt
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         String token = request.getHeader("token");
-        //String token1 = request.getParameter("token");
-        System.out.println("Token: "+token);
         String passWord = request.getParameter("password");
-        //System.out.println("Token1: "+token1);
         if (token != null && !token.equals("")){
             try {
                 String account = TokenUtil.validToken(token);
-                System.out.println("Account: "+account);
                 SysUser sysUser = sysUserService.selectByAccount(account);
-                if (sysUser == null || !sysUser.getPassword().
-                        equalsIgnoreCase(PwdEncoder.getPasswordEncoder().encode(passWord))) {
+                if (sysUser == null || !PwdEncoder.getPasswordEncoder().matches(passWord,sysUser.getPassword())) {
                     SessionStorage.pwdMap.remove(account);
                     throw new RuntimeException("用户不存在/密码错误!");
                 }

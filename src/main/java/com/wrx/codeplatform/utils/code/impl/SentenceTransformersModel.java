@@ -34,11 +34,12 @@ public class SentenceTransformersModel implements TransformersModel {
      */
     @Override
     public String getCleanResult(String args1, String args2){
+        String REGEX_CHINESE = "[\u4e00-\u9fa5]";
         //简单格式化代码
         args1 = DelComments.delComments(args1);
         args2 = DelComments.delComments(args2);
-        args1 = args1.replaceAll("\n","").replaceAll(" ","").replaceAll("\t","");
-        args2 = args2.replaceAll("\n","").replaceAll(" ","").replaceAll("\t","");
+        args1 = args1.replaceAll("\n","").replaceAll(" +","<-%space%->").replaceAll("\t","").replaceAll(REGEX_CHINESE, "");
+        args2 = args2.replaceAll("\n","").replaceAll(" +","<-%space%->").replaceAll("\t","").replaceAll(REGEX_CHINESE, "");
         //获取输出流
         List<String> resultList = getModelOut(args1, args2);
         System.out.println("getCleanResult："+resultList.get(resultList.size()-1));
@@ -57,6 +58,29 @@ public class SentenceTransformersModel implements TransformersModel {
     public String getStringCompareResult(String code1, String code2) {
         return new CodesCompare().getSimilarity(code1, code2)+"";
     }
+
+    /**
+     * 获取加权比对结果
+     *
+     * @param code1 代码1
+     * @param code2 代码2
+     * @return 结果
+     */
+    @Override
+    public String getWeightedResult(String code1, String code2) {
+        final double aiWeight = 0.6, strWeight = 0.4;
+        double aiResult = -1, strResult = -1;
+        try {
+            aiResult = Double.parseDouble(getCleanResult(code1,code2));
+        }catch (Exception ignore){}
+        try {
+            strResult = Double.parseDouble(getStringCompareResult(code1,code2));
+        }catch (Exception ignore){}
+        double result = aiResult * strWeight +
+                    strResult * aiWeight;
+        return result+"";
+    }
+
 
     /**
      * 获取输出流

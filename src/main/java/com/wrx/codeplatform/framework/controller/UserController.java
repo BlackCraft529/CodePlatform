@@ -12,6 +12,7 @@ import com.wrx.codeplatform.domain.framework.sql.user.UserInfo;
 import com.wrx.codeplatform.domain.framework.sql.user.VerifyStatus;
 import com.wrx.codeplatform.domain.result.JsonResult;
 import com.wrx.codeplatform.framework.config.common.PwdEncoder;
+import com.wrx.codeplatform.framework.controller.util.CommonUtils;
 import com.wrx.codeplatform.framework.service.*;
 import com.wrx.codeplatform.utils.common.TimeUtil;
 import com.wrx.codeplatform.utils.common.TokenUtil;
@@ -204,7 +205,7 @@ public class UserController {
         }
         //注册 + 密码加密
         password = PwdEncoder.getPasswordEncoder().encode(password);
-        return jsonObjectMapper.valueToTree(registerUser(account, password, nickName, school, email, location, phone)).toString();
+        return jsonObjectMapper.valueToTree(CommonUtils.registerUser(true,account, password, nickName, school, email, location, phone)).toString();
     }
 
     /**
@@ -285,51 +286,5 @@ public class UserController {
         }
     }
 
-    /**
-     * 注册用户
-     *
-     * @param account     账户
-     * @param password    密码
-     * @param nickName    昵称
-     * @param school      学校
-     * @param email       邮箱
-     * @param location    定位
-     * @param phone       手机
-     * @return            结果信息
-     */
-    private JsonResult registerUser(String account, String password, String nickName, String school, String email, String location, String phone){
-        try{
-            int successNum = 0;
-            SysUser sysUser = new SysUser(account, nickName, password);
-            //插入用户基本信息
-            successNum+=sysUserService.insert(sysUser);
-            sysUser = sysUserService.selectByAccount(account);
-            //插入用户关系表
-            SysUserRoleRelation sysUserRoleRelation = new SysUserRoleRelation(sysUser.getId(), RoleCode.STUDENT.getRoleCode());
-            successNum+=sysUserRoleRelationService.insertNewSysUserRoleRelation(sysUserRoleRelation);
-            //插入角色基本信息表
-            UserInfo userInfo = new UserInfo(sysUser.getId(), "暂未填写", email, phone, location, school, nickName);
-            successNum+=userInfoService.insertUserInfo(userInfo);
-            //更新验证信息表
-            successNum+=verifyStatusService.updateVerifyStatusComplete(phone, true);
-            JsonResult jsonResult;
-            if (successNum == 4){
-                jsonResult = new JsonResult(true);
-                jsonResult.setErrorCode(ResultCode.SUCCESS.getCode());
-            }else {
-                jsonResult = new JsonResult(false);
-                jsonResult.setErrorCode(ResultCode.SQL_ERROR.getCode());
-                jsonResult.setErrorMsg("数据库错误,请联系管理员");
-            }
-            return jsonResult;
-        }catch (Exception exception){
-            exception.printStackTrace();
-            JsonResult jsonResult = new JsonResult(false);
-            jsonResult.setErrorCode(ResultCode.SQL_ERROR.getCode());
-            jsonResult.setErrorMsg("数据库错误,请联系管理员");
-            return jsonResult;
-        }
-
-    }
 
 }

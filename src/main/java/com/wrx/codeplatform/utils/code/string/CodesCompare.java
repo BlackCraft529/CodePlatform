@@ -80,7 +80,7 @@ public class CodesCompare extends AbstractCompare {
     }
 
     /**
-     * 重新相速度提取方法
+     * 重新相似度提取方法
      *
      * @param code1 代码1
      * @param code2 代码2

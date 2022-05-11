@@ -67,4 +67,30 @@ public interface CodeIssuesService {
      * @return        问题
      */
     List<CodeIssues> selectCodeIssuesByPage(int fileId, int page);
+
+    /**
+     * 查询学生提出的代码问题
+     *
+     * @param codeId  代码ID
+     * @return        条数
+     */
+    int selectCodeIssuesByFileIdStu(int codeId);
+
+    /**
+     * 查询老师提出的代码问题
+     *
+     * @param codeId  代码ID
+     * @return        条数
+     */
+    int selectCodeIssuesByFileIdTea(int codeId);
+
+    /**
+     * 查询指定角色提出的所有问题信息
+     *
+     * @param codeId    代码ID
+     * @param roleId    角色ID
+     * @param page      页数
+     * @return          集合
+     */
+    List<CodeIssues> selectAllCodeIssuesByFileIdAndRoleId(int codeId, int roleId, int page);
 }

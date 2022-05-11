@@ -34,4 +34,13 @@ public interface TransformersModel {
      * @return      结果
      */
     String getStringCompareResult(String code1, String code2);
+
+    /**
+     * 获取加权比对结果
+     *
+     * @param code1 代码1
+     * @param code2 代码2
+     * @return      结果
+     */
+    String getWeightedResult(String code1, String code2);
 }

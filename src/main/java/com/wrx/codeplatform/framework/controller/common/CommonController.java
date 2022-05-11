@@ -9,18 +9,24 @@ import com.wrx.codeplatform.domain.enums.ResultCode;
 import com.wrx.codeplatform.domain.framework.entity.rechecking.RecheckingResult;
 import com.wrx.codeplatform.domain.framework.entity.rechecking.RecheckingResultInit;
 import com.wrx.codeplatform.domain.framework.sql.code.Code;
+import com.wrx.codeplatform.domain.framework.sql.user.SysUser;
 import com.wrx.codeplatform.domain.result.JsonResult;
 import com.wrx.codeplatform.framework.service.CodeService;
+import com.wrx.codeplatform.framework.service.SysUserService;
 import com.wrx.codeplatform.utils.code.CodeFactory;
 import com.wrx.codeplatform.utils.code.impl.CodeFactoryImpl;
 import com.wrx.codeplatform.utils.common.TokenUtil;
 import com.wrx.codeplatform.utils.data.SessionStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.net.URLDecoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * @author 魏荣轩
@@ -35,6 +41,8 @@ public class CommonController {
     private final ObjectMapper jsonObjectMapper =  new ObjectMapper();
     @Autowired
     private CodeService codeService;
+    @Autowired
+    private SysUserService sysUserService;
 
     /**
      * 获取院校信息
@@ -45,6 +53,71 @@ public class CommonController {
     @ResponseBody
     public String getSchools(){
         return jsonObjectMapper.valueToTree(new JsonResult(true, ResultCode.SUCCESS, DataPool.schools)).toString();
+    }
+
+    /**
+     * 文件上传
+     *
+     * @param files  文件
+     * @param request    请求
+     * @return       是否成功
+     */
+    @CrossOrigin(origins = "http://localhost:8080",maxAge = 3600)
+    @PostMapping(value = "/uploadFile")
+    //@RequestParam的参数值为前端FormData对象的存储内容的key值
+    //多文件上传时，用MultipartFile[]数组进行接收，单文件也可以这样接收
+    public String uploadFile(@RequestParam("currentFile") MultipartFile[] files, HttpServletRequest request) {
+        String token = request.getHeader("token");
+        System.out.println(token);
+        String description = URLDecoder.decode(request.getHeader("description"));
+        System.out.println(description);
+        String fileName = URLDecoder.decode(request.getHeader("name"));
+        System.out.println(fileName);
+        System.out.println("接收到的文件有"+files.length+"个");
+        String account = TokenUtil.validToken(token);
+        SysUser sysUser = sysUserService.selectByAccount(account);
+        if (sysUser == null){
+            JsonResult jsonResult = new JsonResult(false);
+            jsonResult.setErrorCode(ResultCode.USER_ACCOUNT_DISABLE.getCode());
+            jsonResult.setErrorMsg(ResultCode.USER_ACCOUNT_DISABLE.getMessage());
+            return jsonObjectMapper.valueToTree(jsonResult).toString();
+        }
+        int sum = 0;
+        for(MultipartFile f:files){
+            System.out.println("正在存储"+f.getOriginalFilename()+"文件");
+            String formatDate = new SimpleDateFormat("yyyy-MM-dd_HH_mm_ss").format(new Date());
+            String path = DataPool.fileSavePath+File.separator+sysUser.getId();
+            //格式化时间+原始文件名
+            String name = formatDate+"__"+f.getOriginalFilename();
+            String realPath = path+File.separator+name;
+            File folder=new File(path);
+            if(!folder.isDirectory())
+                folder.mkdirs();
+            try{
+                f.transferTo(new File(folder,name));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            System.out.println("真实路径: "+realPath);
+            //文件存储完毕后插入用户的文件数据信息
+            try{
+                sum = codeService.insertCode(sysUser.getId(), realPath, fileName, description);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            System.out.println("操作成功数:"+sum);
+        }
+        if (sum >= 1){
+            JsonResult jsonResult = new JsonResult(true);
+            jsonResult.setErrorCode(ResultCode.SUCCESS.getCode());
+            return jsonObjectMapper.valueToTree(jsonResult).toString();
+        }else {
+            JsonResult jsonResult = new JsonResult(false);
+            jsonResult.setErrorCode(ResultCode.SQL_ERROR.getCode());
+            jsonResult.setErrorMsg(ResultCode.SQL_ERROR.getMessage());
+            return jsonObjectMapper.valueToTree(jsonResult).toString();
+        }
+
     }
 
     /**

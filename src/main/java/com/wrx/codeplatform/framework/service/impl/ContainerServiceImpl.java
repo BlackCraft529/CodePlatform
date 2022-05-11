@@ -54,6 +54,18 @@ public class ContainerServiceImpl implements ContainerService {
     }
 
     /**
+     * 根据创建者获取最新的容器信息
+     *
+     * @param creator 创建者
+     * @return 容器信息
+     */
+    @Override
+    public Container selectContainerByCreatorDescByDate(int creator) {
+        List<Container> containers = containerMapper.selectContainerByCreatorDescByDate(creator);
+        return containers.size()>=1? containers.get(0) : null;
+    }
+
+    /**
      * 更新容器描述
      *
      * @param id          容器ID
@@ -92,17 +104,12 @@ public class ContainerServiceImpl implements ContainerService {
      */
     @Override
     public List<Container> selectUsersAllContainer(int userId){
-        //获取所有文件的容器
-        List<Code> codeList = codeMapper.selectCodesByUserId(userId);
-        //初始化容器列表
+        List<ContainerLink> containerLinkList = containerLinkMapper.selectContainerLinkByUserId(userId);
         List<Container> containers = new ArrayList<>();
-        for (Code code : codeList){
-            //获取当前文件所投入的所有的容器
-            List<Container> containerList = selectContainerByFileId(code.getId());
-            for (Container container : containerList){
-                if (!containers.contains(container)){
-                    containers.add(container);
-                }
+        for (ContainerLink containerLink: containerLinkList){
+            Container container = containerMapper.selectContainerById(containerLink.getContainerId());
+            if (!containers.contains(container)){
+                containers.add(container);
             }
         }
         return containers;

@@ -26,6 +26,13 @@ public interface ContainerMapper {
      */
     List<Container> selectContainerByCreator(int creator);
 
+    /**
+     * 根据创建者获取最新的容器信息
+     *
+     * @param creator  创建者
+     * @return         容器信息
+     */
+    List<Container> selectContainerByCreatorDescByDate(int creator);
 
     /**
      * 更新容器

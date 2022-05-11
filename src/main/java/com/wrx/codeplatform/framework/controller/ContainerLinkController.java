@@ -13,6 +13,7 @@ import com.wrx.codeplatform.domain.framework.sql.user.UserInfo;
 import com.wrx.codeplatform.domain.result.JsonResult;
 import com.wrx.codeplatform.framework.service.CodeService;
 import com.wrx.codeplatform.framework.service.ContainerLinkService;
+import com.wrx.codeplatform.framework.service.SysUserService;
 import com.wrx.codeplatform.framework.service.UserInfoService;
 import com.wrx.codeplatform.utils.common.TokenUtil;
 import com.wrx.codeplatform.utils.data.SessionStorage;
@@ -37,6 +38,8 @@ public class ContainerLinkController {
     private UserInfoService userInfoService;
     @Autowired
     private CodeService codeService;
+    @Autowired
+    private SysUserService sysUserService;
 
     /**
      * json工具对象
@@ -98,6 +101,7 @@ public class ContainerLinkController {
             jsonResult.setErrorMsg("无效的登入状态!");
             return jsonObjectMapper.valueToTree(jsonResult).toString();
         }
+        int userId = sysUserService.selectByAccount(account).getId();
         List<Integer> codesId = new ArrayList<>();
         for (String strId: node.get("commitCodesId").asText().split(",")){
             codesId.add(Integer.parseInt(strId));
@@ -106,7 +110,7 @@ public class ContainerLinkController {
         int sum = 0;
         int containerId = node.get("containerId").asInt();
         for (int codeId: codesId){
-            sum+=containerLinkService.insertContainerLink(containerId, codeId);
+            sum+=containerLinkService.insertContainerLink(containerId, codeId, userId);
         }
         if (sum > 0){
             JsonResult jsonResult = new JsonResult(true);

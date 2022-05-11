@@ -6,6 +6,7 @@
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="containerId" column="container_id" jdbcType="INTEGER"/>
         <result property="fileId" column="file_id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
     </resultMap>
 
     <select id="selectContainerLinkByCodeIdAndContainerId" resultMap="ContainerLinkMap">
@@ -42,9 +43,12 @@
     </delete>
 
     <insert id="insertContainerLink" keyProperty="id" useGeneratedKeys="true">
-        insert into container_link (container_id, file_id) values (#{containerId}, #{fileId})
+        insert into container_link (container_id, file_id, user_id) values (#{containerId}, #{fileId}, #{userId})
     </insert>
 
+    <select id="selectContainerLinkByUserId" resultMap="ContainerLinkMap">
+        select * from container_link where user_id = #{userId};
+    </select>
 
 
 </mapper>

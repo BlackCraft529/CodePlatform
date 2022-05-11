@@ -1,14 +1,18 @@
 package com.wrx.codeplatform.framework.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wrx.codeplatform.domain.enums.ResultCode;
 import com.wrx.codeplatform.domain.framework.entity.container.ContainerInfo;
+import com.wrx.codeplatform.domain.framework.entity.user.StuData;
 import com.wrx.codeplatform.domain.framework.sql.container.Container;
 import com.wrx.codeplatform.domain.framework.sql.container.ContainerLink;
 import com.wrx.codeplatform.domain.framework.sql.user.SysUser;
 import com.wrx.codeplatform.domain.result.JsonResult;
+import com.wrx.codeplatform.framework.config.common.PwdEncoder;
+import com.wrx.codeplatform.framework.controller.util.CommonUtils;
 import com.wrx.codeplatform.framework.service.ContainerLinkService;
 import com.wrx.codeplatform.framework.service.ContainerService;
 import com.wrx.codeplatform.framework.service.SysUserService;
@@ -128,7 +132,9 @@ public class ContainerController {
             return jsonObjectMapper.valueToTree(jsonResult).toString();
         }
         SysUser sysUser = sysUserService.selectByAccount(account);
+        System.out.println("--用户个人信息:"+sysUser.getId());
         List<Container> containers = containerService.selectUsersAllContainer(sysUser.getId());
+        System.out.println("--课程列表信息:"+containers.size());
         List<ContainerInfo> containerInfos = new ArrayList<>();
         for (Container container: containers){
             containerInfos.add(new ContainerInfo(container));
@@ -306,7 +312,7 @@ public class ContainerController {
      * @return           影响条数
      * @throws JsonProcessingException  转换错误
      */
-    @PreAuthorize("hasAnyAuthority('con_delete')")
+    @PreAuthorize("hasAnyAuthority('con_create')")
     @RequestMapping(value = "/createContainer", produces = {"text/plain;charset=UTF-8"})
     @ResponseBody
     public String createContainer(@RequestBody String jsonData) throws JsonProcessingException {
@@ -324,6 +330,24 @@ public class ContainerController {
         String name = node.get("name").asText();
         String desc = node.get("desc").asText();
         if (containerService.insertContainer(name, creator, desc) == 1){
+            Container container = containerService.selectContainerByCreatorDescByDate(creator);
+            //操作学生数据
+            JavaType javaType = jsonObjectMapper.getTypeFactory().constructParametricType(List.class, StuData.class);
+            List<StuData> stuDataList = jsonObjectMapper.readValue(node.get("stuData").toString(), javaType);
+            //创建学生信息.
+            for (StuData stuData: stuDataList){
+                //若学生不存在,则直接创建新的学生账户信息
+                SysUser sysUser = sysUserService.selectByAccount(stuData.getStuId());
+                if (sysUser == null) {
+                    CommonUtils.registerUser(false, stuData.getStuId(),
+                            PwdEncoder.getPasswordEncoder().encode(stuData.getStuId()),
+                            stuData.getName(), "江苏师范大学", "暂未设置",
+                            "暂未设置", "暂未设置");
+                    sysUser = sysUserService.selectByAccount(stuData.getStuId());
+                }
+                //添加课表关联信息
+                containerLinkService.insertContainerLink(container.getId(), -1, sysUser.getId());
+            }
             JsonResult jsonResult = new JsonResult(true);
             jsonResult.setErrorCode(ResultCode.SUCCESS.getCode());
             return jsonObjectMapper.valueToTree(jsonResult).toString();

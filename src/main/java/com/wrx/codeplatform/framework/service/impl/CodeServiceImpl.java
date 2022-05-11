@@ -1,9 +1,14 @@
 package com.wrx.codeplatform.framework.service.impl;
 
 import com.wrx.codeplatform.domain.framework.sql.code.Code;
+import com.wrx.codeplatform.domain.framework.sql.container.Container;
+import com.wrx.codeplatform.domain.framework.sql.container.ContainerLink;
 import com.wrx.codeplatform.framework.mapper.CodeMapper;
 import com.wrx.codeplatform.framework.service.CodeService;
+import com.wrx.codeplatform.framework.service.ContainerLinkService;
+import com.wrx.codeplatform.framework.service.ContainerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +22,10 @@ public class CodeServiceImpl implements CodeService {
 
     @Autowired
     public CodeMapper codeMapper;
+    @Autowired
+    public ContainerLinkService containerLinkService;
+    @Autowired
+    public ContainerService containerService;
 
     /**
      * 查询Code信息
@@ -106,23 +115,33 @@ public class CodeServiceImpl implements CodeService {
     /**
      * 根据ID删除代码
      *
-     * @param id 用户ID
+     * @param id 代码ID
      * @return 影响条数
      */
     @Override
     public int deleteCodeById(int id) {
-        return 0;
+        List<ContainerLink> containerLinkList = containerLinkService.selectContainerLinkByFileId(id);
+        //删除代码关联信息
+        for (ContainerLink containerLink: containerLinkList){
+            containerLinkService.deleteContainerLinkById(containerLink.getId());
+        }
+        //删除代码
+        return codeMapper.deleteCodeById(id);
     }
 
     /**
      * 插入新的代码信息
      *
      * @param userId   用户ID
-     * @param filePath 文件路径
+     * @param filePath 文件路径.
+     * @param name        名称
+     * @param description   描述
      * @return 影响条数
      */
     @Override
-    public int insertCode(int userId, String filePath) {
-        return 0;
+    public int insertCode(int userId, String filePath, String name, String description) {
+        Code code = new Code(name, description, userId, filePath);
+        return codeMapper.insertCode(code);
     }
+
 }

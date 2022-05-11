@@ -27,6 +27,14 @@ public interface ContainerService {
     int updateContainerNameById(int id, String name);
 
     /**
+     * 根据创建者获取最新的容器信息
+     *
+     * @param creator  创建者
+     * @return         容器信息
+     */
+    Container selectContainerByCreatorDescByDate(int creator);
+
+    /**
      * 更新容器描述
      *
      * @param id              容器ID

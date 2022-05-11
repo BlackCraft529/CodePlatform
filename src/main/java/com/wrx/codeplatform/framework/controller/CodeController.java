@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -201,6 +202,48 @@ public class CodeController {
         return jsonObjectMapper.valueToTree(jsonResult).toString();
     }
 
+    /**
+     * 删除代码文件
+     *
+     * @param jsonData  json数据
+     * @return          结果
+     * @throws JsonProcessingException  转换错误
+     */
+    @PreAuthorize("hasAnyAuthority('modify_self')")
+    @RequestMapping(value = "/delCode",produces = {"text/plain;charset=UTF-8"})
+    @ResponseBody
+    public String delCode(@RequestBody String jsonData) throws JsonProcessingException {
+        JsonNode node = jsonObjectMapper.readTree(jsonData);
+        String token = node.get("token").asText();
+        String account = TokenUtil.validToken(token);
+        if (SessionStorage.pwdMap.get(account) == null) {
+            //用户不存在
+            JsonResult jsonResult = new JsonResult(false);
+            jsonResult.setErrorCode(ResultCode.USER_ACCOUNT_NOT_EXIST.getCode());
+            jsonResult.setErrorMsg("无效的登入状态!");
+            return jsonObjectMapper.valueToTree(jsonResult).toString();
+        }
+        int codeId = node.get("codeId").asInt();
+        Code code = codeService.selectCodeById(codeId);
+        if (code != null){
+            //删除代码数据库内的信息
+            int sum = codeService.deleteCodeById(codeId);
+            if (sum > 0){
+                //删除代码本地文件
+                File codeFile = new File(code.getFilePath());
+                if (codeFile.exists()){
+                    codeFile.delete();
+                }
+            }
+            JsonResult jsonResult = new JsonResult(true);
+            jsonResult.setErrorCode(ResultCode.SUCCESS.getCode());
+            return jsonObjectMapper.valueToTree(jsonResult).toString();
+        }
+        JsonResult jsonResult = new JsonResult(false);
+        jsonResult.setErrorCode(ResultCode.CODE_NOT_EXISTS.getCode());
+        jsonResult.setErrorMsg(ResultCode.CODE_NOT_EXISTS.getMessage());
+        return jsonObjectMapper.valueToTree(jsonResult).toString();
+    }
 
 
 }

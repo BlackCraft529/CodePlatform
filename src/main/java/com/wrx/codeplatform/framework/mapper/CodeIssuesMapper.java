@@ -62,4 +62,24 @@ public interface CodeIssuesMapper {
      */
     List<CodeIssues> selectCodeIssuesByPage(int fileId, int start, int add);
 
+    /**
+     * 根据角色ID查询指定代码的问题列表
+     *
+     * @param fileId  代码ID
+     * @param roleId  角色代码
+     * @param start   开始
+     * @param add     偏移量
+     * @return        集合
+     */
+    List<CodeIssues> selectCodeIssuesByFileIdAndRoleId(int fileId, int roleId, int start, int add);
+
+    /**
+     * 统计条数-根据文件ID和角色ID
+     *
+     * @param fileId    codeId
+     * @param roleId    角色ID
+     * @return          条数
+     */
+    int totalCodeIssuesByFileIdAndRoleId(int fileId, int roleId);
+
 }

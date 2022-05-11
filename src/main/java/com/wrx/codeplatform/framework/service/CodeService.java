@@ -82,7 +82,10 @@ public interface CodeService {
      *
      * @param userId      用户ID
      * @param filePath    文件路径
+     * @param name        名称
+     * @param description   描述
      * @return            影响条数
      */
-    int insertCode(int userId, String filePath);
+    int insertCode(int userId, String filePath, String name, String description);
+
 }

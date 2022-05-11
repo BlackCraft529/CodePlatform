@@ -4,10 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wrx.codeplatform.domain.enums.ResultCode;
+import com.wrx.codeplatform.domain.enums.RoleCode;
 import com.wrx.codeplatform.domain.framework.entity.code.CodeIssuesInfo;
 import com.wrx.codeplatform.domain.framework.sql.code.CodeIssues;
+import com.wrx.codeplatform.domain.framework.sql.user.SysUserRoleRelation;
 import com.wrx.codeplatform.domain.result.JsonResult;
 import com.wrx.codeplatform.framework.service.CodeIssuesService;
+import com.wrx.codeplatform.framework.service.SysUserRoleRelationService;
 import com.wrx.codeplatform.utils.common.TokenUtil;
 import com.wrx.codeplatform.utils.data.SessionStorage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +32,8 @@ import java.util.List;
 public class IssuesController {
     @Autowired
     private CodeIssuesService codeIssuesService;
+    @Autowired
+    private SysUserRoleRelationService sysUserRoleRelationService;
 
     /**
      * json工具对象
@@ -43,9 +48,9 @@ public class IssuesController {
      * @throws JsonProcessingException   json转换错误
      */
     @PreAuthorize("hasAnyAuthority('view_self')")
-    @RequestMapping(value = "/getIssuesCount", produces = {"text/plain;charset=UTF-8"})
+    @RequestMapping(value = "/getIssuesCountByRole", produces = {"text/plain;charset=UTF-8"})
     @ResponseBody
-    public String getIssuesCount(@RequestBody String jsonData) throws JsonProcessingException {
+    public String getIssuesCountStu(@RequestBody String jsonData) throws JsonProcessingException {
         JsonNode node = jsonObjectMapper.readTree(jsonData);
         String token = node.get("token").asText();
         String account = TokenUtil.validToken(token);
@@ -57,7 +62,17 @@ public class IssuesController {
             return jsonObjectMapper.valueToTree(jsonResult).toString();
         }
         int codeId = node.get("codeId").asInt();
-        int count = codeIssuesService.selectCodeIssuesByFileId(codeId).size();
+        String role = node.get("role").asText();
+        int count = 0;
+        try{
+            if (role.equalsIgnoreCase("stu")){
+                count = codeIssuesService.selectCodeIssuesByFileIdStu(codeId);
+            }else {
+                count = codeIssuesService.selectCodeIssuesByFileIdTea(codeId);
+            }
+        }catch (Exception exception){
+            exception.printStackTrace();
+        }
         JsonResult jsonResult = new JsonResult(true);
         jsonResult.setErrorCode(ResultCode.SUCCESS.getCode());
         jsonResult.setData(count);
@@ -72,13 +87,12 @@ public class IssuesController {
      * @throws JsonProcessingException   转换错误
      */
     @PreAuthorize("hasAnyAuthority('view_self')")
-    @RequestMapping(value = "/getAllIssues", produces = {"text/plain;charset=UTF-8"})
+    @RequestMapping(value = "/getAllIssuesByRole", produces = {"text/plain;charset=UTF-8"})
     @ResponseBody
-    public String getAllIssuesByPages(@RequestBody String jsonData) throws JsonProcessingException {
+    public String getAllIssuesStuByPages(@RequestBody String jsonData) throws JsonProcessingException {
         JsonNode node = jsonObjectMapper.readTree(jsonData);
         String token = node.get("token").asText();
         String account = TokenUtil.validToken(token);
-        System.out.println("Token: "+token);
         if (SessionStorage.pwdMap.get(account) == null ){
             //用户不存在
             JsonResult jsonResult = new JsonResult(false);
@@ -88,10 +102,19 @@ public class IssuesController {
         }
         int page = node.get("page").asInt();
         int codeId = node.get("codeId").asInt();
-        System.out.println("Page: "+page+"   CodeId: "+codeId);
-        List<CodeIssues> codeIssues = codeIssuesService.selectCodeIssuesByPage(codeId, page);
+        String role = node.get("role").asText();
+        List<CodeIssues> codeIssues = new ArrayList<>();
+        try{
+            if (role.equalsIgnoreCase("stu")) {
+                codeIssues = codeIssuesService.selectAllCodeIssuesByFileIdAndRoleId(codeId, RoleCode.STUDENT.getRoleCode(), page);
+            }else {
+                codeIssues = codeIssuesService.selectAllCodeIssuesByFileIdAndRoleId(codeId, RoleCode.TEACHER.getRoleCode(), page);
+            }
+        }catch (Exception exception){
+            exception.printStackTrace();
+        }
         List<CodeIssuesInfo> codeIssuesInfos = new ArrayList<>();
-        System.out.println("计数:"+codeIssues.size());
+        System.out.println(role+"信息计数:"+codeIssues.size());
         for (CodeIssues issues: codeIssues){
             codeIssuesInfos.add(new CodeIssuesInfo(issues));
         }
@@ -125,6 +148,26 @@ public class IssuesController {
         int codeId = node.get("codeId").asInt();
         int proposerId = node.get("proposerId").asInt();
         String context = node.get("context").asText();
+        String role = node.get("role").asText();
+        List<SysUserRoleRelation> sysUserRoleRelationList = sysUserRoleRelationService.selectSysUserRoleRelationByUserId(proposerId);
+        boolean canOpen = false;
+        for (SysUserRoleRelation sysUserRoleRelation: sysUserRoleRelationList){
+            if (role.equalsIgnoreCase("tea") && sysUserRoleRelation.getRoleId().equals(RoleCode.TEACHER.getRoleCode())){
+                canOpen = true;
+                break;
+            }else if (role.equalsIgnoreCase("stu") && sysUserRoleRelation.getRoleId().equals(RoleCode.STUDENT.getRoleCode())){
+                canOpen = true;
+                break;
+            }
+        }
+        //角色不匹配
+        if (!canOpen){
+            String roleType = role.equalsIgnoreCase("tea")?"教师":"学生";
+            JsonResult jsonResult = new JsonResult(false);
+            jsonResult.setErrorCode(ResultCode.ROLE_OPEN_ISSUES_IS_FAIL.getCode());
+            jsonResult.setErrorMsg(ResultCode.ROLE_OPEN_ISSUES_IS_FAIL.getMessage().replaceAll("%role%", roleType));
+            return jsonObjectMapper.valueToTree(jsonResult).toString();
+        }
         CodeIssues codeIssues = new CodeIssues(context, codeId, proposerId);
         if (codeIssuesService.insertNewCodeIssues(codeIssues) == 1){
             JsonResult jsonResult = new JsonResult(true);

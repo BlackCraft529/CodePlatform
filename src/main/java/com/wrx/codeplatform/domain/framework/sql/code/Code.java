@@ -18,4 +18,16 @@ public class Code {
     private Date lastCheckDate;
     private Date uploadDate;
     private String result;
+
+    public Code(){}
+    public Code(String name, String description, int userId, String filePath){
+        this.name = name;
+        this.description = description;
+        this.userId = userId;
+        this.filePath = filePath;
+        this.score = 0;
+        this.lastCheckDate = new Date();
+        this.uploadDate = new Date();
+        this.result = "";
+    }
 }

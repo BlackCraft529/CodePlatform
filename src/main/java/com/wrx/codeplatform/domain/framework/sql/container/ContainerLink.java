@@ -11,4 +11,5 @@ public class ContainerLink {
     private int id;
     private int containerId;
     private int fileId;
+    private int userId;
 }
