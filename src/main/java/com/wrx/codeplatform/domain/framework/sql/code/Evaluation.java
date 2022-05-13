@@ -1,5 +1,7 @@
 package com.wrx.codeplatform.domain.framework.sql.code;
 
+import com.wrx.codeplatform.domain.framework.sql.user.UserInfo;
+import com.wrx.codeplatform.utils.common.ServiceFactory;
 import lombok.Data;
 import java.util.Date;
 

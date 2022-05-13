@@ -28,7 +28,12 @@ public class RecheckingCodeResult {
         this.id = code.getId();
         this.name = code.getName();
         this.description = code.getDescription();
-        this.userName = ServiceFactory.userInfoService.selectByUserId(code.getUserId()).getNickName();
+        UserInfo userInfo = ServiceFactory.userInfoService.selectByUserId(code.getUserId());
+        if (userInfo != null){
+            this.userName = userInfo.getNickName();
+        }else {
+            this.userName = "未知用户";
+        }
         this.score = code.getScore();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         this.uploadDate = sdf.format(code.getUploadDate());

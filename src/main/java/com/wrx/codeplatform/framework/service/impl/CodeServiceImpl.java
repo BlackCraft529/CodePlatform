@@ -144,4 +144,14 @@ public class CodeServiceImpl implements CodeService {
         return codeMapper.insertCode(code);
     }
 
+    /**
+     * 查询所有代码
+     *
+     * @return 代码结合
+     */
+    @Override
+    public List<Code> selectAllCodes() {
+        return codeMapper.selectAllCodes();
+    }
+
 }

@@ -133,7 +133,7 @@ public class UserInfoServiceImpl implements UserInfoService {
      */
     @Override
     public int updateUserInfo(UserInfo userInfo) {
-        return 0;
+        return userInfoMapper.updateUserInfo(userInfo);
     }
 
     /**
@@ -156,6 +156,6 @@ public class UserInfoServiceImpl implements UserInfoService {
      */
     @Override
     public int deleteUserInfo(int userId) {
-        return 0;
+        return userInfoMapper.deleteUserInfo(userId);
     }
 }

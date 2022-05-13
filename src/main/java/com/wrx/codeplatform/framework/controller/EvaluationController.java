@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wrx.codeplatform.domain.enums.Common;
 import com.wrx.codeplatform.domain.enums.ResultCode;
+import com.wrx.codeplatform.domain.framework.entity.code.EvaluationInfo;
 import com.wrx.codeplatform.domain.framework.sql.code.Evaluation;
 import com.wrx.codeplatform.domain.result.JsonResult;
 import com.wrx.codeplatform.framework.service.EvaluationService;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -96,9 +98,13 @@ public class EvaluationController {
         int codeId = node.get("codeId").asInt();
         int page = node.get("page").asInt();
         List<Evaluation> evaluations = evaluationService.selectEvaluationByPage(codeId, page);
+        List<EvaluationInfo> evaluationInfos = new ArrayList<>();
+        for (Evaluation evaluation: evaluations){
+            evaluationInfos.add(new EvaluationInfo(evaluation));
+        }
         JsonResult jsonResult = new JsonResult(true);
         jsonResult.setErrorCode(ResultCode.SUCCESS.getCode());
-        jsonResult.setData(evaluations);
+        jsonResult.setData(evaluationInfos);
         return jsonObjectMapper.valueToTree(jsonResult).toString();
     }
 

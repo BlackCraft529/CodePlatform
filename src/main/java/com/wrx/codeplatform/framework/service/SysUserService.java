@@ -50,7 +50,7 @@ public interface SysUserService {
      * @param sysUser 实例对象
      * @return 实例对象
      */
-    SysUser update(SysUser sysUser);
+    int update(SysUser sysUser);
 
     /**
      * 通过主键删除数据

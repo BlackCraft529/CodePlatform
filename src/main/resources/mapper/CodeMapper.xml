@@ -66,4 +66,8 @@
         insert into user_code_files (user_id, description, name, file_path, score, last_check_date, `result`, upload_date)
         values (#{userId}, #{description}, #{name}, #{filePath}, #{score}, #{lastCheckDate}, #{result} , now())
     </insert>
+
+    <select id="selectAllCodes" resultMap="CodeMap">
+        select * from user_code_files;
+    </select>
 </mapper>

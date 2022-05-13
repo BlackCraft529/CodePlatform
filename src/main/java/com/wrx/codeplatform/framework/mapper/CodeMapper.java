@@ -68,4 +68,11 @@ public interface CodeMapper {
      * @return       影响条数
      */
     int insertCode(Code code);
+
+    /**
+     * 查询所有代码
+     *
+     * @return 所有代码
+     */
+    List<Code> selectAllCodes();
 }

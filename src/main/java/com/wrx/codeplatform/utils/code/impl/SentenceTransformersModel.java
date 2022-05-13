@@ -21,8 +21,11 @@ import java.util.List;
  */
 public class SentenceTransformersModel implements TransformersModel {
     public SentenceTransformersModel(){ }
-    private final String pythonPath = "D:\\代码\\sentence-transformers\\examples\\applications\\cross-encoder\\cross-encoder-interface.py",
-            pythonEnvironment = "D:\\代码\\sentence-transformers\\venv\\Scripts\\python.exe";
+    private final String
+            pythonJavaInterfacePath = "D:\\代码\\sentence-transformers\\examples\\applications\\cross-encoder\\cross-encoder-interface.py",
+            pythonJavaEnvironment = "D:\\代码\\sentence-transformers\\venv\\Scripts\\python.exe",
+            pythonInterfacePath = "D:\\代码\\SBERT-Interface\\sbert-interface.py",
+            pythonEnvironment = "D:\\IDE\\python37\\python.exe";
 
     /**
      * 获取最后的输出结果
@@ -38,11 +41,20 @@ public class SentenceTransformersModel implements TransformersModel {
         //简单格式化代码
         args1 = DelComments.delComments(args1);
         args2 = DelComments.delComments(args2);
-        args1 = args1.replaceAll("\n","").replaceAll(" +","<-%space%->").replaceAll("\t","").replaceAll(REGEX_CHINESE, "");
-        args2 = args2.replaceAll("\n","").replaceAll(" +","<-%space%->").replaceAll("\t","").replaceAll(REGEX_CHINESE, "");
+        args1 = args1.replaceAll("\n","")
+                .replaceAll("- ","")
+                .replaceAll(" -","")
+                .replaceAll(" +","<-%space%->")
+                .replaceAll("\t","")
+                .replaceAll(REGEX_CHINESE, "");
+        args2 = args2.replaceAll("\n","")
+                .replaceAll("- ","")
+                .replaceAll(" -","")
+                .replaceAll(" +","<-%space%->")
+                .replaceAll("\t","")
+                .replaceAll(REGEX_CHINESE, "");
         //获取输出流
         List<String> resultList = getModelOut(args1, args2);
-        System.out.println("getCleanResult："+resultList.get(resultList.size()-1));
         //返回百分比
         return resultList.get(resultList.size()-1);
     }
@@ -92,7 +104,7 @@ public class SentenceTransformersModel implements TransformersModel {
     @Override
     public List<String> getModelOut(String args1, String args2){
         try {
-            String[] cmdArray = new String[] {pythonEnvironment, pythonPath, args1, args2};
+            String[] cmdArray = new String[] {pythonEnvironment, pythonInterfacePath, args1, args2};
             return getStrings(cmdArray);
         } catch (Exception e) {
             e.printStackTrace();

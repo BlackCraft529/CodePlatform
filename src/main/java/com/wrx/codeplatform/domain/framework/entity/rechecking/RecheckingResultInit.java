@@ -1,9 +1,5 @@
 package com.wrx.codeplatform.domain.framework.entity.rechecking;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import java.util.*;
 

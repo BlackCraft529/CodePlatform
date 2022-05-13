@@ -88,4 +88,10 @@ public interface CodeService {
      */
     int insertCode(int userId, String filePath, String name, String description);
 
+    /**
+     * 查询所有代码
+     *
+     * @return 代码结合
+     */
+    List<Code> selectAllCodes();
 }

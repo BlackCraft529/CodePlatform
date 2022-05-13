@@ -133,6 +133,93 @@ public class UserController {
     }
 
     /**
+     * 修改用户信息
+     *
+     * @param jsonData  json数据
+     * @return          结果
+     * @throws JsonProcessingException   转换错误
+     */
+    @PreAuthorize("hasAnyAuthority('view_self')")
+    @RequestMapping(value = "/changeUserInfo",produces = {"text/plain;charset=UTF-8"})
+    @ResponseBody
+    public String changeUserInfo(@RequestBody String jsonData) throws JsonProcessingException {
+        JsonNode node = jsonObjectMapper.readTree(jsonData);
+        String token = node.get("token").asText();
+        String account = TokenUtil.validToken(token);
+        SysUser sysUser = sysUserService.selectByAccount(account);
+        if (sysUser == null) {
+            //用户不存在
+            JsonResult jsonResult = new JsonResult(false);
+            jsonResult.setErrorCode(ResultCode.USER_ACCOUNT_NOT_EXIST.getCode());
+            jsonResult.setErrorMsg("账号不存在或登入过期");
+            return jsonObjectMapper.valueToTree(jsonResult).toString();
+        }
+        String newNickName = node.get("newNickName").asText();
+        String newDescription = node.get("newDescription").asText();
+        String newHeadPortrait = node.get("newHeadPortrait").asText();
+        String newLocation = node.get("newLocation").asText();
+        String newEmail = node.get("newEmail").asText();
+        UserInfo userInfo = userInfoService.selectByUserId(sysUser.getId());
+        userInfo.setDescription(newDescription);
+        userInfo.setHeadPortrait(newHeadPortrait);
+        userInfo.setEmail(newEmail);
+        userInfo.setLocation(DataPool.locations.get(Integer.parseInt(newLocation)));
+        userInfo.setNickName(newNickName);
+        if (userInfoService.updateUserInfo(userInfo) == 1){
+            JsonResult jsonResult = new JsonResult(true);
+            jsonResult.setErrorCode(ResultCode.SUCCESS.getCode());
+            return jsonObjectMapper.valueToTree(jsonResult).toString();
+        }
+        JsonResult jsonResult = new JsonResult(false);
+        jsonResult.setErrorCode(ResultCode.SQL_ERROR.getCode());
+        jsonResult.setErrorMsg(ResultCode.SQL_ERROR.getMessage());
+        return jsonObjectMapper.valueToTree(jsonResult).toString();
+    }
+
+    /**
+     * 修改密码
+     *
+     * @param jsonData  json数据
+     * @return          结果
+     * @throws JsonProcessingException   转换错误
+     */
+    @PreAuthorize("hasAnyAuthority('view_self')")
+    @RequestMapping(value = "/changePwd",produces = {"text/plain;charset=UTF-8"})
+    @ResponseBody
+    public String changePwd(@RequestBody String jsonData) throws JsonProcessingException {
+        JsonNode node = jsonObjectMapper.readTree(jsonData);
+        String token = node.get("token").asText();
+        String account = TokenUtil.validToken(token);
+        SysUser sysUser = sysUserService.selectByAccount(account);
+        if (sysUser == null) {
+            //用户不存在
+            JsonResult jsonResult = new JsonResult(false);
+            jsonResult.setErrorCode(ResultCode.USER_ACCOUNT_NOT_EXIST.getCode());
+            jsonResult.setErrorMsg("账号不存在或登入过期");
+            return jsonObjectMapper.valueToTree(jsonResult).toString();
+        }
+        String oldPwd = node.get("oldPwd").asText();
+        if (!PwdEncoder.getPasswordEncoder().matches(oldPwd,sysUser.getPassword())){
+            JsonResult jsonResult = new JsonResult(false);
+            jsonResult.setErrorCode(ResultCode.USER_CREDENTIALS_ERROR.getCode());
+            jsonResult.setErrorMsg(ResultCode.USER_CREDENTIALS_ERROR.getMessage());
+            return jsonObjectMapper.valueToTree(jsonResult).toString();
+        }
+        String newPwd = node.get("newPwd").asText();
+        newPwd = PwdEncoder.getPasswordEncoder().encode(newPwd);
+        sysUser.setPassword(newPwd);
+        if (sysUserService.update(sysUser) == 1){
+            JsonResult jsonResult = new JsonResult(true);
+            jsonResult.setErrorCode(ResultCode.SUCCESS.getCode());
+            return jsonObjectMapper.valueToTree(jsonResult).toString();
+        }
+        JsonResult jsonResult = new JsonResult(false);
+        jsonResult.setErrorCode(ResultCode.SQL_ERROR.getCode());
+        jsonResult.setErrorMsg(ResultCode.SQL_ERROR.getMessage());
+        return jsonObjectMapper.valueToTree(jsonResult).toString();
+    }
+
+    /**
      * 获取用户信息
      *
      * @param jsonData   json数据
